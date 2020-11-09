@@ -85,8 +85,8 @@ void Player::update()
 	getRigidBody()->velocity += getRigidBody()->acceleration;
 
 	glm::vec2 pos = getTransform()->position;
-	//pos.x += getRigidBody()->velocity.x * deltaTime;
-	//pos.y += getRigidBody()->velocity.y * deltaTime;
+	pos.x += getRigidBody()->velocity.x * deltaTime;
+	pos.y += getRigidBody()->velocity.y * deltaTime;
 
 	//std::cout << getRigidBody()->acceleration.x << std::endl;
 	//std::cout << getRigidBody()->acceleration.y << std::endl;
