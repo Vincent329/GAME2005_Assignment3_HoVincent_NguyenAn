@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Util.h"
 #include "TextureManager.h"
 
 Player::Player(): m_currentAnimationState(PLAYER_IDLE_RIGHT)
@@ -61,11 +62,87 @@ void Player::draw()
 
 void Player::update()
 {
+	const float deltaTime = 1.0f / 60.f;
+
+	// must normalize
+	float dirMagnitude = Util::magnitude(m_direction);
+	if (dirMagnitude > 0) {
+		;
+		// normalize the vector
+		getRigidBody()->acceleration = Util::normalize(m_direction) * ACCELERATION; // direction vector multiplied by acceleration when we have a direction input
+	}
+	else if (Util::magnitude(getRigidBody()->velocity) > 0) { // no input but we need to check if velocity still goes
+	 // normalize current velocity when we're not inputting anything, just give us direction vector when magnitude is 1
+		getRigidBody()->acceleration = Util::normalize(getRigidBody()->velocity) * -ACCELERATION; // so we make sure that our direction is slowing down every frame by making sure velocity goes opposite of our acceleration
+	}
+
+	// once velocity slows down to the point it's less than the magnitude of our acceleration.  Safety net friction
+	if (Util::magnitude(getRigidBody()->velocity) < Util::magnitude(getRigidBody()->acceleration) && Util::magnitude(getRigidBody()->velocity) > 0) {
+		getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
+		getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
+	}
+
+	getRigidBody()->velocity += getRigidBody()->acceleration;
+
+	glm::vec2 pos = getTransform()->position;
+	//pos.x += getRigidBody()->velocity.x * deltaTime;
+	//pos.y += getRigidBody()->velocity.y * deltaTime;
+
+	//std::cout << getRigidBody()->acceleration.x << std::endl;
+	//std::cout << getRigidBody()->acceleration.y << std::endl;
+
+	getTransform()->position = pos;
 }
 
 void Player::clean()
 {
 }
+
+// MOVEMENT CODE
+void Player::moveLeft() {
+	m_direction.x = -1;
+}
+
+void Player::moveRight() {
+	m_direction.x = 1;
+
+}
+
+void Player::moveUp() {
+	m_direction.y = -1;
+
+}
+
+void Player::moveDown() {
+	m_direction.y = 1;
+}
+
+void Player::stopMovingX() {
+	m_direction.x = 0;
+}
+
+void Player::stopMovingY() {
+	m_direction.y = 0;
+}
+
+bool Player::isColliding(GameObject* pOther) {
+	// Works for square sprites only
+	float myRadius = getWidth() * 0.5f;
+	float otherRadius = pOther->getWidth() * 0.5f;
+
+	return (getDistance(pOther) <= myRadius + otherRadius);
+}
+
+float Player::getDistance(GameObject* pOther) {
+	glm::vec2 myPos = getTransform()->position;
+	glm::vec2 otherPos = pOther->getTransform()->position;
+
+	// Use pythagorean to calculate distance c = sqrt(a^2 + b^2)
+	float a = myPos.x - otherPos.x;
+	float b = myPos.y - otherPos.y;
+	return sqrt(a * a + b * b);
+}
+
 
 void Player::setAnimationState(const PlayerAnimationState new_state)
 {

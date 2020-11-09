@@ -96,7 +96,29 @@ void PlayScene::handleEvents()
 			}
 		}
 	}
-	
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
+	{
+		m_pPlayer->moveLeft();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
+	{
+		m_pPlayer->moveRight();
+	}
+	else
+	{
+		m_pPlayer->stopMovingX();
+	}
+
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W)) { // separate these if stateme
+		m_pPlayer->moveUp();
+	}
+	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S)) {
+		m_pPlayer->moveDown();
+	}
+	else
+	{
+		m_pPlayer->stopMovingY();
+	}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
