@@ -6,7 +6,9 @@
 #include "Plane.h"
 #include "Player.h"
 #include "Button.h"
+#include "BulletPool.h"
 #include "Label.h"
+#include "Enemy.h"
 
 class PlayScene : public Scene
 {
@@ -29,6 +31,9 @@ private:
 
 	Plane* m_pPlaneSprite;
 	Player* m_pPlayer;
+	Enemy* m_Enemy;
+	BulletPool* m_pPool;
+
 	bool m_playerFacingRight;
 
 	// UI Items

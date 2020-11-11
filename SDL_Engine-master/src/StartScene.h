@@ -24,6 +24,9 @@ private:
 	Label* m_pStartLabel{};
 	Label* m_pInstructionsLabel{};
 
+	Label* m_Vincent;
+	Label* m_An;
+
 	Ship* m_pShip{};
 
 	Button* m_pStartButton;

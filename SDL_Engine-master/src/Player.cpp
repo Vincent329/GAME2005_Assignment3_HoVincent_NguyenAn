@@ -67,7 +67,6 @@ void Player::update()
 	// must normalize
 	float dirMagnitude = Util::magnitude(m_direction);
 	if (dirMagnitude > 0) {
-		;
 		// normalize the vector
 		getRigidBody()->acceleration = Util::normalize(m_direction) * ACCELERATION; // direction vector multiplied by acceleration when we have a direction input
 	}
@@ -82,7 +81,12 @@ void Player::update()
 		getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	}
 
+	//if (Util::magnitude(getRigidBody()->velocity) >= MAXVELOCITY)
+	//{
+	//	getRigidBody()->velocity = MAXVELOCITY;
+	//}
 	getRigidBody()->velocity += getRigidBody()->acceleration;
+
 
 	glm::vec2 pos = getTransform()->position;
 	pos.x += getRigidBody()->velocity.x * deltaTime;

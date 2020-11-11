@@ -42,12 +42,16 @@ void Plane::draw()
 
 void Plane::update()
 {
-}
+	float deltaTime = 1 / 60;
+	getRigidBody()->acceleration = glm::vec2(0.0f, 9.8f);
 
+	getRigidBody()->velocity += getRigidBody()->acceleration * deltaTime;
+	getTransform()->position += getRigidBody()->velocity * deltaTime;
+}
 void Plane::clean()
 {
-}
 
+}
 void Plane::m_buildAnimations()
 {
 	Animation planeAnimation = Animation();
