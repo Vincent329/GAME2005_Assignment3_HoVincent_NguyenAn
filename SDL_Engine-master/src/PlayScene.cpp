@@ -1,6 +1,7 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "EventManager.h"
+#include "BulletManager.h"
 
 // required for IMGUI
 #include "imgui.h"
@@ -29,6 +30,10 @@ void PlayScene::draw()
 void PlayScene::update()
 {
 	updateDisplayList();
+	if (SDL_GetTicks() - bulletSpawnTimerStart >= bulletSpawnTimerDuration)
+	{
+		//SpawnBullet();
+	}
 }
 
 void PlayScene::clean()
@@ -152,13 +157,17 @@ void PlayScene::start()
 	m_Enemy = new Enemy();
 	addChild(m_Enemy);
 
+	// bullet pool
 	m_pPool = new BulletPool(10);
-
+	bulletSpawnTimerStart = SDL_GetTicks(); // 
 	for (int i = 0; i < 10; i++)
 	{
 		Enemy* bullet = m_pPool->spawn();
-		addChild(bullet);
-		bullet->getTransform()->position = glm::vec2(50 * i, 0);
+		if (bullet)
+		{
+			addChild(bullet);
+			bullet->getTransform()->position = glm::vec2(50 * i + 100, 0);
+		}
 	}
 
 	m_playerFacingRight = true;
@@ -210,6 +219,11 @@ void PlayScene::start()
 
 	addChild(m_pInstructionsLabel);
 }
+
+//void PlayScene::SpawnBullet()
+//{
+//
+//}
 
 void PlayScene::GUI_Function() const
 {

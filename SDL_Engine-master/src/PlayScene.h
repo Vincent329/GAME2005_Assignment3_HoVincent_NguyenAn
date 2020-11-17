@@ -27,12 +27,17 @@ private:
 	void GUI_Function() const;
 	std::string m_guiTitle;
 	
+	// bullet manager items
+	const float bulletSpawnTimerDuration = 3.0f;
+	float bulletSpawnTimerStart;
+	
 	glm::vec2 m_mousePosition;
 
 	Plane* m_pPlaneSprite;
 	Player* m_pPlayer;
 	Enemy* m_Enemy;
 	BulletPool* m_pPool;
+	//BulletManager* m_pBulletManager;
 
 	bool m_playerFacingRight;
 
@@ -40,6 +45,8 @@ private:
 	Button* m_pBackButton;
 	Button* m_pNextButton;
 	Label* m_pInstructionsLabel;
+
+	//void SpawnBullet();
 };
 
 #endif /* defined (__PLAY_SCENE__) */
