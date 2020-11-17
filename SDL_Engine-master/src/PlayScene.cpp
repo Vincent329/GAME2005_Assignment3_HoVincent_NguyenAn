@@ -1,7 +1,6 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "EventManager.h"
-#include "BulletManager.h"
 
 // required for IMGUI
 #include "imgui.h"
