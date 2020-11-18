@@ -22,13 +22,15 @@ public:
 	virtual void clean() override;
 	virtual void handleEvents() override;
 	virtual void start() override;
+
+
 private:
 	// IMGUI Function
 	void GUI_Function() const;
 	std::string m_guiTitle;
 	
 	// bullet manager items
-	const float bulletSpawnTimerDuration = 3.0f;
+	const float bulletSpawnTimerDuration = 500.0f; // 3 seconds = 3000 milliseconds
 	float bulletSpawnTimerStart;
 	
 	glm::vec2 m_mousePosition;
@@ -45,6 +47,8 @@ private:
 	Button* m_pBackButton;
 	Button* m_pNextButton;
 	Label* m_pInstructionsLabel;
+
+	void SpawnBullet();
 
 	//void SpawnBullet();
 };

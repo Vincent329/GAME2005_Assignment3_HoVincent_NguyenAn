@@ -42,8 +42,7 @@ void Enemy::clean() {
 
 
 void Enemy::Reset() {
-	active = false;
-	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
+	getRigidBody()->velocity = glm::vec2(0.0f, 50.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 9.8f);
 	getRigidBody()->isColliding = false;
 }

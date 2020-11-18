@@ -31,7 +31,20 @@ void PlayScene::update()
 	updateDisplayList();
 	if (SDL_GetTicks() - bulletSpawnTimerStart >= bulletSpawnTimerDuration)
 	{
-		//SpawnBullet();
+		SpawnBullet();
+	}
+
+	std::vector<Enemy*>& activeBullets = m_pPool->all;
+
+
+	for (std::vector<Enemy*>::iterator myiter = activeBullets.begin(); myiter != activeBullets.end(); myiter++)
+	{
+		Enemy* bullet = *myiter;
+		if (bullet->active && bullet->getTransform()->position.y >= 650) // if the bullet is alive and hits the bottom
+		{
+			m_pPool->despawn(bullet); // despawn the bullet
+			break;
+		}
 	}
 }
 
@@ -156,18 +169,18 @@ void PlayScene::start()
 	m_Enemy = new Enemy();
 	addChild(m_Enemy);
 
-	// bullet pool
+	// bullet pool creation
 	m_pPool = new BulletPool(10);
-	bulletSpawnTimerStart = SDL_GetTicks(); // 
-	for (int i = 0; i < 10; i++)
+
+	// add each one to the scene
+	for (std::vector<Enemy*>::iterator myiter = m_pPool->all.begin(); myiter != m_pPool->all.end(); myiter++) // iterate through all bullets
 	{
-		Enemy* bullet = m_pPool->spawn();
-		if (bullet)
-		{
-			addChild(bullet);
-			bullet->getTransform()->position = glm::vec2(50 * i + 100, 0);
-		}
+		Enemy* bullet = *myiter;
+		addChild(bullet); // for each bullet, add to the scene
 	}
+
+	bulletSpawnTimerStart = SDL_GetTicks(); // the delta time
+	
 
 	m_playerFacingRight = true;
 
@@ -219,10 +232,16 @@ void PlayScene::start()
 	addChild(m_pInstructionsLabel);
 }
 
-//void PlayScene::SpawnBullet()
-//{
-//
-//}
+// BULLET SPAWNING
+void PlayScene::SpawnBullet()
+{
+	Enemy* bullet = m_pPool->spawn(); // every half a second when the function is called, we spawn the bullet by setting values and pushing it onto the queue
+		if (bullet)
+		{
+			bullet->getTransform()->position = glm::vec2(50 + rand() % 700, 0);
+		}
+		bulletSpawnTimerStart = SDL_GetTicks();
+}
 
 void PlayScene::GUI_Function() const
 {
