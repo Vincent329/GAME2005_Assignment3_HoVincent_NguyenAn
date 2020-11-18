@@ -46,7 +46,8 @@ void StartScene::handleEvents()
 void StartScene::start()
 {
 	const SDL_Color blue = { 0, 0, 255, 255 };
-	m_pStartLabel = new Label("START SCENE", "Consolas", 80, blue, glm::vec2(400.0f, 40.0f));
+	const SDL_Color black = { 0, 0, 0 , 255 };
+	m_pStartLabel = new Label("ASSIGNMENT 3", "Consolas", 80, blue, glm::vec2(400.0f, 40.0f));
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
@@ -54,14 +55,21 @@ void StartScene::start()
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
+	m_Vincent = new Label("Vincent Ho - 101334300", "Consolas", 20, black, glm::vec2(400.0F, 200.0f));
+	m_Vincent->setParent(this);
+	addChild(m_Vincent);
+
+	m_An = new Label("An Nguyen - 101166265", "Consolas", 20, black, glm::vec2(400.0f, 230.0f));
+	m_An->setParent(this);
+	addChild(m_An);
 
 	m_pShip = new Ship();
 	m_pShip->getTransform()->position = glm::vec2(400.0f, 300.0f); 
 	addChild(m_pShip); 
 
-	// Start Button
+	// Start Button for SCENE 1
 	m_pStartButton = new Button();
-	m_pStartButton->getTransform()->position = glm::vec2(400.0f, 400.0f); 
+	m_pStartButton->getTransform()->position = glm::vec2(200.0f, 400.0f); 
 
 	m_pStartButton->addEventListener(CLICK, [&]()-> void
 	{
@@ -79,6 +87,29 @@ void StartScene::start()
 		m_pStartButton->setAlpha(255);
 	});
 	addChild(m_pStartButton);
+
+	// Start Button for SCENE 2
+
+	m_pMouseStartButton = new Button();
+	m_pMouseStartButton->getTransform()->position = glm::vec2(600.0f, 400.0f);
+
+	m_pMouseStartButton->addEventListener(CLICK, [&]()-> void
+		{
+			m_pMouseStartButton->setActive(false);
+			TheGame::Instance()->changeSceneState(PLAY_MOUSE_SCENE);
+		});
+
+	m_pMouseStartButton->addEventListener(MOUSE_OVER, [&]()->void
+		{
+			m_pMouseStartButton->setAlpha(128);
+		});
+
+	m_pMouseStartButton->addEventListener(MOUSE_OUT, [&]()->void
+		{
+			m_pMouseStartButton->setAlpha(255);
+		});
+	addChild(m_pMouseStartButton);
+
 
 	
 }

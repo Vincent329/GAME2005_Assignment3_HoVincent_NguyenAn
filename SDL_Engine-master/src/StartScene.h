@@ -30,6 +30,8 @@ private:
 	Ship* m_pShip{};
 
 	Button* m_pStartButton;
+	Button* m_pMouseStartButton; // for 2nd scene
+
 };
 
 #endif /* defined (__START_SCENE__) */
