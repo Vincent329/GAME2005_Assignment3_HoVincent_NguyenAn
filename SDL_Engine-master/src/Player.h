@@ -4,6 +4,7 @@
 
 #include "PlayerAnimationState.h"
 #include "Sprite.h"
+#include "SceneState.h"
 
 class Player final : public Sprite
 {
@@ -23,6 +24,11 @@ public:
 	void moveDown();
 	void stopMovingX();
 	void stopMovingY();
+
+	// Mouse logic
+	int xMouse, yMouse;
+	void mouseMovement(int x, int y);
+	SceneState getCurrentState;
 
 	bool isColliding(GameObject*);
 	float getDistance(GameObject*);

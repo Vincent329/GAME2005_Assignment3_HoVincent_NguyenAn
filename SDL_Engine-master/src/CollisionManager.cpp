@@ -27,11 +27,10 @@ bool CollisionManager::squaredRadiusCheck(GameObject* object1, GameObject* objec
 			object2->getRigidBody()->isColliding = true;
 
 			switch (object2->getType()) {
-			case TARGET:
+			case TARGET:	// change this for the bullet pool too.  Use Target for now for the sake of consistency
+							// add own sound files should you wish 
 				std::cout << "Collision with Target!" << std::endl;
 				SoundManager::Instance().playSound("yay", 0);
-
-				
 				break;
 			default:
 				

@@ -6,8 +6,10 @@
 #include "Plane.h"
 #include "Player.h"
 #include "Button.h"
+#include "Target.h"
 #include "Label.h"
 #include "Enemy.h"
+#include "CollisionManager.h"
 
 class MousePlayScene : public Scene
 {
@@ -22,17 +24,26 @@ public:
 	virtual void handleEvents() override;
 	virtual void start() override;
 
+	//// physics calculations
+	//float subtractMomentum(float mass, float velocity);
+	//float calculateVelocity(float mass, float momentumm);
+	//float energyCalculation;
 
 private:
 	// IMGUI Function
 	void GUI_Function() const;
 	std::string m_guiTitle;
 
-	glm::vec2 m_mousePosition;
-
+	glm::vec2 m_mousePosition; // figure how to get this
+	int xMouse, yMouse;
+	
+	// Player Items
 	Plane* m_pPlaneSprite;
 	Player* m_pPlayer;
 	Enemy* m_Enemy;
+
+	// Bouncing Ball Test
+	Target* m_pBall;
 
 	bool m_playerFacingRight;
 

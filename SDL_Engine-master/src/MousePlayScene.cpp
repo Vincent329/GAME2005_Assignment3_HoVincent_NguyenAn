@@ -29,6 +29,11 @@ void MousePlayScene::draw()
 void MousePlayScene::update()
 {
 	updateDisplayList();
+	SDL_GetMouseState(&xMouse, &yMouse);
+	m_pPlayer->mouseMovement(xMouse, yMouse);
+
+	CollisionManager::squaredRadiusCheck(m_pPlayer, m_pBall);
+
 }
 
 void MousePlayScene::clean()
@@ -70,7 +75,6 @@ void MousePlayScene::handleEvents()
 		}
 	}
 
-
 	// handle player movement if no Game Controllers found
 	if (SDL_NumJoysticks() < 1)
 	{
@@ -96,29 +100,29 @@ void MousePlayScene::handleEvents()
 			}
 		}
 	}
-	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
-	{
-		m_pPlayer->moveLeft();
-	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
-	{
-		m_pPlayer->moveRight();
-	}
-	else
-	{
-		m_pPlayer->stopMovingX();
-	}
+	//if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
+	//{
+	//	m_pPlayer->moveLeft();
+	//}
+	//else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
+	//{
+	//	m_pPlayer->moveRight();
+	//}
+	//else
+	//{
+	//	m_pPlayer->stopMovingX();
+	//}
 
-	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W)) { // separate these if stateme
-		m_pPlayer->moveUp();
-	}
-	else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S)) {
-		m_pPlayer->moveDown();
-	}
-	else
-	{
-		m_pPlayer->stopMovingY();
-	}
+	//if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W)) { // separate these if stateme
+	//	m_pPlayer->moveUp();
+	//}
+	//else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S)) {
+	//	m_pPlayer->moveDown();
+	//}
+	//else
+	//{
+	//	m_pPlayer->stopMovingY();
+	//}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
@@ -138,8 +142,11 @@ void MousePlayScene::handleEvents()
 
 void MousePlayScene::start()
 {
+	// Load a sound
+	SoundManager::Instance().load("../Assets/audio/yay.ogg", "yay", SOUND_SFX);
+	
 	// Set GUI Title
-	m_guiTitle = "Play Scene";
+		m_guiTitle = "Play Scene";
 
 	// Plane Sprite
 	m_pPlaneSprite = new Plane();
@@ -149,9 +156,13 @@ void MousePlayScene::start()
 	m_pPlayer = new Player();
 	addChild(m_pPlayer);
 
+	// enemy not spawned? active is false.. don't even need
 	m_Enemy = new Enemy();
 	addChild(m_Enemy);
 
+	// Instantiate the target
+	m_pBall = new Target();
+	addChild(m_pBall);
 
 	m_playerFacingRight = true;
 
@@ -216,6 +227,34 @@ void MousePlayScene::GUI_Function() const
 	if (ImGui::Button("My Button"))
 	{
 		std::cout << "My Button Pressed" << std::endl;
+	}
+
+	// Play Button
+	if (ImGui::Button("Play"))
+	{
+
+	}
+
+	// Reset Button
+	if (ImGui::Button("Reset"))
+	{
+
+	}
+	ImGui::Separator();
+	// Shape Buttons
+	ImGui::Text("Shape Selection");
+	if (ImGui::Button("Circle"))
+	{
+
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Square"))
+	{
+
+	}
+	if (ImGui::Button("Triangle"))
+	{
+
 	}
 
 	ImGui::Separator();

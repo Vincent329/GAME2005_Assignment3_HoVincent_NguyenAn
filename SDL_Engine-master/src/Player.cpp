@@ -80,21 +80,11 @@ void Player::update()
 		getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 		getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	}
-
-	//if (Util::magnitude(getRigidBody()->velocity) >= MAXVELOCITY)
-	//{
-	//	getRigidBody()->velocity = MAXVELOCITY;
-	//}
 	getRigidBody()->velocity += getRigidBody()->acceleration;
-
 
 	glm::vec2 pos = getTransform()->position;
 	pos.x += getRigidBody()->velocity.x * deltaTime;
 	pos.y += getRigidBody()->velocity.y * deltaTime;
-
-	//std::cout << getRigidBody()->acceleration.x << std::endl;
-	//std::cout << getRigidBody()->acceleration.y << std::endl;
-
 	getTransform()->position = pos;
 }
 
@@ -127,6 +117,12 @@ void Player::stopMovingX() {
 
 void Player::stopMovingY() {
 	m_direction.y = 0;
+}
+
+void Player::mouseMovement(int x, int y)
+{
+	getTransform()->position.x = x;
+	getTransform()->position.y = y;
 }
 
 bool Player::isColliding(GameObject* pOther) {
