@@ -9,6 +9,7 @@
 #include "Target.h"
 #include "Label.h"
 #include "Enemy.h"
+#include "Util.h"
 #include "CollisionManager.h"
 
 class MousePlayScene : public Scene

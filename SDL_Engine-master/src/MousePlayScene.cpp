@@ -23,6 +23,8 @@ void MousePlayScene::draw()
 	}
 
 	drawDisplayList();
+	Util::DrawCircle(m_pPlayer->getTransform()->position, std::max(m_pPlayer->getWidth() * 0.5f, m_pPlayer->getHeight() * 0.5f));
+
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
 }
 
@@ -32,7 +34,7 @@ void MousePlayScene::update()
 	SDL_GetMouseState(&xMouse, &yMouse);
 	m_pPlayer->mouseMovement(xMouse, yMouse);
 
-	CollisionManager::squaredRadiusCheck(m_pPlayer, m_pBall);
+	CollisionManager::circleAABBCheck(m_pPlayer, m_pBall); // figure out velocity response
 
 }
 
