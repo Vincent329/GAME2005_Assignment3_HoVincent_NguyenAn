@@ -192,6 +192,9 @@ bool CollisionManager::lineAABBCheck(Ship* object1, GameObject* object2)
 			SoundManager::Instance().playSound("yay", 0);
 
 			break;
+
+		case PLAYER:
+			break;
 		default:
 			
 			break;
@@ -205,7 +208,7 @@ bool CollisionManager::lineAABBCheck(Ship* object1, GameObject* object2)
 
 int CollisionManager::circleAABBsquaredDistance(const glm::vec2 circle_centre, int circle_radius, const glm::vec2 box_start, const int box_width, const int box_height)
 {
-	auto dx = std::max(box_start.x - circle_centre.x, 0.0f);
+	auto dx = std::max(box_start.x - circle_centre.x, 0.0f); 
 	dx = std::max(dx, circle_centre.x - (box_start.x + box_width));
 	auto dy = std::max(box_start.y - circle_centre.y, 0.0f);
 	dy = std::max(dy, circle_centre.y - (box_start.y + box_height));
@@ -220,7 +223,7 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 	const int circleRadius = std::max(object1->getWidth() * 0.5f, object1->getHeight() * 0.5f);
 	// aabb
 	const auto boxWidth = object2->getWidth();
-	int halfBoxWidth = boxWidth * 0.5f;
+	int halfBoxWidth = boxWidth * 0.5f; // just so we don't calculate this over again
 	const auto boxHeight = object2->getHeight();
 	int halfBoxHeight = boxHeight * 0.5f;
 
@@ -232,16 +235,57 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 
 			object2->getRigidBody()->isColliding = true;
 
-			const auto attackVector = object1->getTransform()->position - object2->getTransform()->position;
+			const auto attackVector = object1->getTransform()->position - object2->getTransform()->position; // this is a glm::vec2, difference in position
 			const auto normal = glm::vec2(0.0f, -1.0f);
 
-			const auto dot = Util::dot(attackVector, normal);
-			const auto angle = acos(dot / Util::magnitude(attackVector)) * Util::Rad2Deg;
+			std::cout << "Attack X: " << attackVector.x << std::endl;
+			std::cout << "Attack Y: " << attackVector.y << std::endl;
+
+			const auto dot = Util::dot(attackVector, normal); // a float value, this is the angle to calculate the hit
+			const auto angle = acos(dot / Util::magnitude(attackVector)) * Util::Rad2Deg; // normalized
+
+			std::cout << "Angle: " << angle << std::endl;
 
 			switch (object2->getType()) {
 			case TARGET:
 				std::cout << "Collision with Planet!" << std::endl;
 				SoundManager::Instance().playSound("yay", 0);
+				break;
+			case PLAYER:
+				std::cout << "COLLISION DETECTED" << std::endl;
+				{
+					SoundManager::Instance().playSound("yay", 0);
+
+					auto velocityX = object1->getRigidBody()->velocity.x;
+					auto velocityY = object1->getRigidBody()->velocity.y;
+
+					if ((attackVector.x > 0 && attackVector.y < 0) || (attackVector.x < 0 && attackVector.y < 0))
+						// top right or top left
+					{
+
+						if (angle <= 45)
+						{
+							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+						}
+						else
+						{
+							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+						}
+					}
+
+					if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
+						// bottom right or bottom left
+					{
+						if (angle <= 135)
+						{
+							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+						}
+						else
+						{
+							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+						}
+					}}
+
 				break;
 			case SHIP:
 				{
@@ -297,6 +341,12 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 	return false;
 }
 
+
+bool CollisionManager::collisionCheck(GameObject* object1, GameObject* object2)
+{
+	return 0;
+}
+
 bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rect_start, const float rect_width, const float rect_height)
 {
 	const float topLeftX = rect_start.x - rect_width * 0.5;
@@ -313,6 +363,7 @@ bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rec
 	}
 	return false;
 }
+
 
 
 CollisionManager::CollisionManager()

@@ -39,6 +39,18 @@ void Target::clean()
 {
 }
 
+
+float Target::getMass()
+{
+	return mass;
+}
+
+
+void Target::setMass(float _mass)
+{
+	mass = _mass;
+}
+
 void Target::m_move()
 {
 	getTransform()->position = getTransform()->position + getRigidBody()->velocity * 5.0f;
@@ -47,18 +59,35 @@ void Target::m_move()
 
 void Target::m_checkBounds()
 {
-	if (getTransform()->position.x > (800.0f - getWidth()*.5) || getTransform()->position.x < (0.0f + getWidth()*.5))
+	// hits right wall 
+	if (getTransform()->position.x >= (800.0f - getWidth()* 0.5f))
 	{
-		getRigidBody()->velocity.x *= -1;
+		getTransform()->position.x = 800.0f - getWidth() * 0.5f;
+		getRigidBody()->velocity.x *= -0.9f;
 	}
-	if (getTransform()->position.y > (600.0f - getHeight()*.5) || getTransform()->position.y < (0.0f + getHeight()*.5))
-	{							 
-		getRigidBody()->velocity.y *= -1;
+	// hits left wall
+	else if (getTransform()->position.x <= (0.0f + getWidth() * 0.5f))
+	{
+		getTransform()->position.x = 0 + getWidth() * 0.5f;
+		getRigidBody()->velocity.x *= -0.9f;
+	}
+	// hits bottom wall
+	if (getTransform()->position.y >= (600.0f - getWidth()* 0.5f)) 
+	{	
+		getTransform()->position.y = 600.0f - getWidth() * 0.5f;
+		getRigidBody()->velocity.y *= -0.9f;
+	}
+	// hits top wall
+	else if (getTransform()->position.y <= (0.0f + getWidth() * 0.5f))
+	{
+		getTransform()->position.y = 0 + getWidth() * 0.5f;
+		getRigidBody()->velocity.y *= -0.9f;
+
 	}
 }
 
 void Target::m_reset()
 {
-	getTransform()->position = (glm::vec2(Util::RandomRange(0.0f, 800.0f), Util::RandomRange(0.0f, 600.0f)));
-	getRigidBody()->velocity = (glm::vec2(Util::RandomRange(-1.0f, 1.0f), 1.0f));
+	getTransform()->position = (glm::vec2(Util::RandomRange(0.0f, 800.0f - getWidth()), Util::RandomRange(0.0f, 600.0f - getWidth())));
+	getRigidBody()->velocity = (glm::vec2(Util::RandomRange(-1.0f, 1.0f), 3.0f));
 }

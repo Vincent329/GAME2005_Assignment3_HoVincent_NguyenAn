@@ -15,6 +15,9 @@ public:
 	virtual void update() override;
 	virtual void clean() override;
 
+	float getMass();
+	void setMass(float _nass);
+
 	//void bounceWall;
 
 private:

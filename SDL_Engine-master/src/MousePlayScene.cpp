@@ -23,7 +23,8 @@ void MousePlayScene::draw()
 	}
 
 	drawDisplayList();
-	Util::DrawCircle(m_pPlayer->getTransform()->position, std::max(m_pPlayer->getWidth() * 0.5f, m_pPlayer->getHeight() * 0.5f));
+	Util::DrawCircle(m_pBall->getTransform()->position, std::max(m_pBall->getWidth() * 0.5f, m_pBall->getHeight() * 0.5f));
+	Util::DrawRect(m_pPlayer->getTransform()->position - glm::vec2(m_pPlayer->getWidth()*0.5, m_pPlayer->getHeight() *.5f), m_pPlayer->getWidth(), m_pPlayer->getHeight());
 
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
 }
@@ -34,7 +35,7 @@ void MousePlayScene::update()
 	SDL_GetMouseState(&xMouse, &yMouse);
 	m_pPlayer->mouseMovement(xMouse, yMouse);
 
-	CollisionManager::circleAABBCheck(m_pPlayer, m_pBall); // figure out velocity response
+	CollisionManager::circleAABBCheck(m_pBall, m_pPlayer); // figure out velocity response
 
 }
 
@@ -158,9 +159,9 @@ void MousePlayScene::start()
 	m_pPlayer = new Player();
 	addChild(m_pPlayer);
 
-	// enemy not spawned? active is false.. don't even need
-	m_Enemy = new Enemy();
-	addChild(m_Enemy);
+	//// enemy not spawned? active is false.. don't even need
+	//m_Enemy = new Enemy();
+	//addChild(m_Enemy);
 
 	// Instantiate the target
 	m_pBall = new Target();
