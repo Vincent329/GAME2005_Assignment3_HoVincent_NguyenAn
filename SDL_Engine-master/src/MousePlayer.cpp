@@ -82,7 +82,7 @@ void MousePlayer::update()
 
 	/*std::cout << "Velocity X: " << velocityX << std::endl;
 	std::cout << "Velocity Y: " << velocityY << std::endl;*/
-	std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
+	//std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
 
 	lastUpdateTime = currentTime;
 	initialPosition = currentPosition;

@@ -1,7 +1,6 @@
 #include "CollisionManager.h"
 #include "Util.h"
 #include <algorithm>
-#include <limits>
 
 
 
@@ -34,7 +33,7 @@ bool CollisionManager::squaredRadiusCheck(GameObject* object1, GameObject* objec
 				SoundManager::Instance().playSound("yay", 0);
 				break;
 			default:
-				
+
 				break;
 			}
 
@@ -61,7 +60,7 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 
 	if (
 		p1.x < p2.x + p2Width &&
-		p1.x + p1Width > p2.x&&
+		p1.x + p1Width > p2.x &&
 		p1.y < p2.y + p2Height &&
 		p1.y + p1Height > p2.y
 		)
@@ -75,12 +74,8 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 				std::cout << "Collision with Target!" << std::endl;
 				SoundManager::Instance().playSound("yay", 0);
 				break;
-			case PLAYER:
-				std::cout << "Collision with Target!" << std::endl;
-				SoundManager::Instance().playSound("yay", 0);
-				break;
 			default:
-				
+
 				break;
 			}
 
@@ -201,7 +196,7 @@ bool CollisionManager::lineAABBCheck(Ship* object1, GameObject* object2)
 		case PLAYER:
 			break;
 		default:
-			
+
 			break;
 		}
 
@@ -213,7 +208,7 @@ bool CollisionManager::lineAABBCheck(Ship* object1, GameObject* object2)
 
 int CollisionManager::circleAABBsquaredDistance(const glm::vec2 circle_centre, int circle_radius, const glm::vec2 box_start, const int box_width, const int box_height)
 {
-	auto dx = std::max(box_start.x - circle_centre.x, 0.0f); 
+	auto dx = std::max(box_start.x - circle_centre.x, 0.0f);
 	dx = std::max(dx, circle_centre.x - (box_start.x + box_width));
 	auto dy = std::max(box_start.y - circle_centre.y, 0.0f);
 	dy = std::max(dy, circle_centre.y - (box_start.y + box_height));
@@ -234,7 +229,7 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 
 	const auto boxStart = object2->getTransform()->position - glm::vec2(boxWidth * 0.5f, boxHeight * 0.5f);
 
-	if (circleAABBsquaredDistance(circleCentre, circleRadius, boxStart, boxWidth, boxHeight) <= (circleRadius * circleRadius)) // squared for a more accurate calculation and no loss of dataa
+	if (circleAABBsquaredDistance(circleCentre, circleRadius, boxStart, boxWidth, boxHeight) <= (circleRadius * circleRadius))
 	{
 		if (!object2->getRigidBody()->isColliding) {
 
@@ -251,97 +246,87 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 
 			std::cout << "Angle: " << angle << std::endl;
 
-			//switch (object2->getType()) {
-			//case TARGET:
-			//	std::cout << "Collision with Planet!" << std::endl;
-			//	SoundManager::Instance().playSound("yay", 0);
-			//	break;
+			switch (object2->getType()) {
+			case TARGET:
+				std::cout << "Collision with Planet!" << std::endl;
+				SoundManager::Instance().playSound("yay", 0);
+				break;
+			case PLAYER:
+				std::cout << "COLLISION DETECTED" << std::endl;
+				{
+					SoundManager::Instance().playSound("yay", 0);
 
-			//case PLAYER:
-			//{
-			//	std::cout << "COLLISION DETECTED" << std::endl;
+					auto velocityX = object1->getRigidBody()->velocity.x;
+					auto velocityY = object1->getRigidBody()->velocity.y;
 
-			//	SoundManager::Instance().playSound("yay", 0);
+					if ((attackVector.x > 0 && attackVector.y < 0) || (attackVector.x < 0 && attackVector.y < 0))
+						// top right or top left
+					{
 
-			//	auto velocityX = object1->getRigidBody()->velocity.x;
-			//	auto velocityY = object1->getRigidBody()->velocity.y;
+						if (angle <= 45)
+						{
+							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+						}
+						else
+						{
+							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+						}
+					}
 
-			//	if ((attackVector.x > 0 && attackVector.y < 0) || (attackVector.x < 0 && attackVector.y < 0))
-			//		// top right or top left
-			//	{
+					if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
+						// bottom right or bottom left
+					{
+						if (angle <= 135)
+						{
+							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+						}
+						else
+						{
+							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+						}
+					}}
 
-			//		if (angle <= 45)
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
-			//			object1->getRigidBody()->velocity +=
-			//				(glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
+				break;
+			case SHIP:
+			{
+				SoundManager::Instance().playSound("thunder", 0);
+				auto velocityX = object1->getRigidBody()->velocity.x;
+				auto velocityY = object1->getRigidBody()->velocity.y;
 
-			//		}
-			//		else
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
-			//			object1->getRigidBody()->velocity +=
-			//				(glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
-			//		}
-			//	}
+				if ((attackVector.x > 0 && attackVector.y < 0) || (attackVector.x < 0 && attackVector.y < 0))
+					// top right or top left
+				{
 
-			//	if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
-			//		// bottom right or bottom left
-			//	{
-			//		if (angle <= 135)
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
-			//			object1->getRigidBody()->velocity +=
-			//				(glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
-			//		}
-			//		else
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
-			//			object1->getRigidBody()->velocity +=
-			//				(glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
-			//		}
-			//	}
-			//}
-			//break;
-			//
-			//case SHIP:
-			//{
-			//	SoundManager::Instance().playSound("thunder", 0);
-			//	auto velocityX = object1->getRigidBody()->velocity.x;
-			//	auto velocityY = object1->getRigidBody()->velocity.y;
+					if (angle <= 45)
+					{
+						object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+					}
+					else
+					{
+						object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+					}
+				}
 
-			//	if ((attackVector.x > 0 && attackVector.y < 0) || (attackVector.x < 0 && attackVector.y < 0))
-			//		// top right or top left
-			//	{
+				if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
+					// bottom right or bottom left
+				{
+					if (angle <= 135)
+					{
+						object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+					}
+					else
+					{
+						object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+					}
+				}
+			}
 
-			//		if (angle <= 45)
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
-			//		}
-			//		else
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
-			//		}
-			//	}
 
-			//	if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
-			//		// bottom right or bottom left
-			//	{
-			//		if (angle <= 135)
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
-			//		}
-			//		else
-			//		{
-			//			object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
-			//		}
-			//	}
-			//}
-			//break;
-			//default:
+			break;
+			default:
 
-			//	break;
-			//}
+				break;
+			}
 
 			return true;
 		}
@@ -349,8 +334,8 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 	}
 	else
 	{
-	object2->getRigidBody()->isColliding = false;
-	return false;
+		object2->getRigidBody()->isColliding = false;
+		return false;
 	}
 
 	return false;
@@ -362,132 +347,6 @@ bool CollisionManager::collisionCheck(GameObject* object1, GameObject* object2)
 	return 0;
 }
 
-// returns entry time based on inverse time, and the float factor will move the ball out of the way
-float CollisionManager::sweptAABB(GameObject* object1, GameObject* object2, float& normalx, float& normaly)
-{
-	// inverse time
-	float xInvEntry, yInvEntry; // how far the closest edges of the objects are from each other
-	float xInvExit, yInvExit;   // distance to the far side of the object
-
-	// moving particle
-	const auto boxWidth = object1->getWidth();
-	const int halfBoxWidth = boxWidth * 0.5f;
-	const auto boxHeight = object1->getHeight();
-	const int halfBoxHeight = boxHeight * 0.5f;
-	const auto targetBoxStart = object1->getTransform()->position - glm::vec2(halfBoxWidth, halfBoxHeight);
-
-	// the ship
-	const auto playerBoxWidth = object2->getWidth();
-	const int halfPlayerBoxWidth = playerBoxWidth * 0.5f;
-	const auto playerBoxHeight = object2->getHeight();
-	const int halfPlayerBoxHeight = playerBoxHeight * 0.5f;
-	const auto playerBoxStart = object2->getTransform()->position - glm::vec2(playerBoxWidth, playerBoxHeight);
-	
-	// distance between the near AND far sides for both x and y
-	// going right
-	if (object1->getRigidBody()->velocity.x > 0.0f)
-	{
-		xInvEntry = playerBoxStart.x - (targetBoxStart.x + object1->getWidth());
-		xInvExit = (playerBoxStart.x + object2->getWidth()) - targetBoxStart.x;
-		/*std::cout << "xInvEntry: " << xInvEntry << std::endl;
-		std::cout << "xInvExit: " << xInvExit << std::endl;*/
-		//std::cout << "Going Right" << std::endl;
-	}
-	else {
-		xInvEntry = (playerBoxStart.x + object2->getWidth()) - targetBoxStart.x;
-		xInvExit = playerBoxStart.x - (targetBoxStart.x + object1->getWidth());
-		//std::cout << "xInvEntry: " << xInvEntry << std::endl;
-		//std::cout << "xInvExit: " << xInvExit << std::endl;
-		//std::cout << "Going Left" << std::endl;
-	}
-	if (object1->getRigidBody()->velocity.y < 0.0f)
-	{
-		yInvEntry = playerBoxStart.y - (targetBoxStart.y + object1->getHeight());
-		yInvExit = (playerBoxStart.y + object2->getHeight()) - targetBoxStart.y;
-		/*	std::cout << "yInvEntry: " << yInvEntry << std::endl;
-			std::cout << "yInvExit: " << yInvExit << std::endl;*/
-			//std::cout << "Going Up" << std::endl;
-	}
-	else {
-		yInvEntry = (playerBoxStart.y + object2->getHeight()) - targetBoxStart.y;
-		yInvExit = playerBoxStart.y - (targetBoxStart.y + object1->getHeight());
-		/*std::cout << "yInvEntry: " << yInvEntry << std::endl;
-		std::cout << "yInvExit: " << yInvExit << std::endl;*/
-		//std::cout << "Going Down" << std::endl;
-	}
-
-	float xEntry, yEntry;
-	float xExit, yExit;
-
-	if (object1->getRigidBody()->velocity.x == 0.0f)
-	{
-		xEntry = -std::numeric_limits<float>::infinity();
-		xExit = std::numeric_limits<float>::infinity();
-	}
-	else {
-		xEntry = xInvEntry / object1->getRigidBody()->velocity.x;
-		xExit = xInvExit / object1->getRigidBody()->velocity.x;
-		//std::cout << "X Entry: " << xEntry << std::endl;
-	}
-	if (object1->getRigidBody()->velocity.y == 0.0f)
-	{
-		yEntry = -std::numeric_limits<float>::infinity();
-		yExit = std::numeric_limits<float>::infinity();
-	}
-	else {
-		yEntry = yInvEntry / object1->getRigidBody()->velocity.y;
-		yExit = yInvExit / object1->getRigidBody()->velocity.y;
-		//std::cout << "Y Entry: " << yEntry << std::endl;
-	}
-
-	// find earliest and latest times of collision
-	float entryTime = std::max(xEntry, yEntry);
-	float exitTime = std::max(xExit, yExit);
-	
-	//std::cout << entryTime << std::endl;
-
-	// NO COLLISION DETECTED, want to find a value between 0 and 1
-	if (entryTime > exitTime || xEntry < 0.0f && yEntry < 0.0f || xEntry > 1.0f || yEntry > 1.0f)
-	{
-		normalx = 0.0f;
-		normaly = 0.0f;
-		std::cout << "No collision" << std::endl;
-		return 1.0f;
-	}
-	// if there is a collision
-	else {
-		if (xEntry > yEntry)
-		{
-			if (xInvEntry < 0.0f)
-			{
-				normalx = 1.0f;
-				normaly = 0.0f;
-				std::cout << "Coming from right" << std::endl;
-			}
-			else
-			{
-				normalx = -1.0f;
-				normaly = 0.0f;
-				std::cout << "Coming from left" << std::endl;
-			}
-		}
-		else {
-			if (yInvEntry > 0.0f)
-			{
-				normalx = 0.0f;
-				normaly = 1.0f;
-				std::cout << "Coming from top" << std::endl;
-			}
-			else {
-				normalx = 0.0f;
-				normaly = -1.0f;
-				std::cout << "Coming from bottom" << std::endl;
-			}
-		}
-		return entryTime;
-	}
-}
-
 bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rect_start, const float rect_width, const float rect_height)
 {
 	const float topLeftX = rect_start.x - rect_width * 0.5;
@@ -495,9 +354,9 @@ bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rec
 	const auto width = rect_width;
 	const auto height = rect_height;
 
-	if (point.x > topLeftX&&
+	if (point.x > topLeftX &&
 		point.x < topLeftX + width &&
-		point.y > topLeftY&&
+		point.y > topLeftY &&
 		point.y < topLeftY + height)
 	{
 		return true;
@@ -505,15 +364,6 @@ bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rec
 	return false;
 }
 
-// Collision Response (Elastic Collision)
-// if mass of puck is less than mass of player
-
-// m1v1(initial) + m2v2(initial) = m1v1(final) + m2v2(final) 
-// (FOR BOTH X AND Y COMPONENTS)
-
-// if mass of player is much greater than ball
-// player continues in motion unaltered but the ball continues with a speed of about TWICE the initial speed of player (IF AT REST)
-// If the light ball hits the heavy particle at rest (mouse doesn't move), light particle has its velocity REVERSED (it's already in the code here)
 
 
 CollisionManager::CollisionManager()

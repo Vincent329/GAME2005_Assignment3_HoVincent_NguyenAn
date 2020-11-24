@@ -52,22 +52,10 @@ void Target::setMass(float _mass)
 	mass = _mass;
 }
 
-float Target::getInitialVelocityX()
-{
-	return initialVelocityX;
-}
-
-float Target::getInitialVelocityY()
-{
-	return initialVelocityY;
-}
-
 void Target::m_move()
 {
 	getTransform()->position = getTransform()->position + getRigidBody()->velocity;
-	initialVelocityX = getRigidBody()->velocity.x;
-	initialVelocityY = getRigidBody()->velocity.y;
-	// movement logic
+
 }
 
 void Target::m_checkBounds()
