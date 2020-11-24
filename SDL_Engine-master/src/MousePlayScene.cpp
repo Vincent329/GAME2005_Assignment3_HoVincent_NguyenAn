@@ -156,9 +156,9 @@ void MousePlayScene::start()
 	// Set GUI Title
 		m_guiTitle = "Play Scene";
 
-	// Plane Sprite
-	m_pPlaneSprite = new Plane();
-	addChild(m_pPlaneSprite);
+	//// Plane Sprite
+	//m_pPlaneSprite = new Plane();
+	//addChild(m_pPlaneSprite);
 
 	// Player Sprite
 	m_pMousePlayer = new MousePlayer();
