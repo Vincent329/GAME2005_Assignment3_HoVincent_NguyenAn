@@ -18,6 +18,8 @@ public:
 
 	float getMass();
 	void setMass(float _nass);
+	float getInitialVelocityX();
+	float getInitialVelocityY();
 
 	//CollisionShape collisionType = CIRCLE;
 

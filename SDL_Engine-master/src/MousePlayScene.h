@@ -50,7 +50,6 @@ private:
 	bool m_playerFacingRight;
 
 	// physics properties
-	glm::vec2 momentum;
 	float massPlayer = 5.0f;
 	float massBall = 2.5f;
 

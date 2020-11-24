@@ -266,10 +266,12 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 						if (angle <= 45)
 						{
 							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+							object1->getRigidBody()->velocity += (glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
 						}
 						else
 						{
 							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+							object1->getRigidBody()->velocity += (glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
 						}
 					}
 
@@ -279,10 +281,12 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 						if (angle <= 135)
 						{
 							object1->getRigidBody()->velocity = glm::vec2(-velocityX, velocityY);
+							object1->getRigidBody()->velocity += (glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
 						}
 						else
 						{
 							object1->getRigidBody()->velocity = glm::vec2(velocityX, -velocityY);
+							object1->getRigidBody()->velocity += (glm::vec2(static_cast<MousePlayer*>(object2)->getVelocityX(), static_cast<MousePlayer*>(object2)->getVelocityY()) * 10.0f);
 						}
 					}}
 
