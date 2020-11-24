@@ -59,6 +59,10 @@ private:
 	const float ACCELERATION = 10.0F;
 	glm::vec2 m_direction;
 
+	// asset properties
+	bool isFlipped;
+	float flipAngle;
+
 	//Physics properties
 	float mass;
 	int lastUpdateTime;

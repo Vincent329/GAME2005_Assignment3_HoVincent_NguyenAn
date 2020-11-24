@@ -247,6 +247,7 @@ void MousePlayScene::GUI_Function() const
 
 	ImGui::Separator();
 	// Shape Buttons
+	
 	ImGui::Text("Shape Selection");
 	if (ImGui::Button("Circle"))
 	{
@@ -258,6 +259,10 @@ void MousePlayScene::GUI_Function() const
 		m_pBall->setCollisionType(RECTANGLE);
 	}
 	
+	if (ImGui::Button("Flip Paddle"))
+	{
+		m_pMousePlayer->flipPaddle();
+	}
 
 	// --------------------Parameter changes-------------------------
 	static float m_massPlayer = 5.0f;

@@ -30,6 +30,8 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	initialVelocityX = 0.0f;
 	initialVelocityY = 0.0f;
 	mass = 5.0f;
+	isFlipped = false;
+	flipAngle = 0.0f;
 	lastUpdateTime = SDL_GetTicks();
 	initialPosition = getTransform()->position;
 	setType(PLAYER);
@@ -46,7 +48,7 @@ void MousePlayer::draw()
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
 
-	TextureManager::Instance()->draw("paddle", x, y, 0.0f, 255, true);
+	TextureManager::Instance()->draw("paddle", x, y, flipAngle, 255, true);
 	// draw the Player according to animation state
 	/*switch (m_currentAnimationState)
 	{
@@ -184,7 +186,26 @@ void MousePlayer::setInitialVelocityY(float _ivelocityY)
 
 void MousePlayer::flipPaddle()
 {
+	auto size = TextureManager::Instance()->getTextureSize("paddle");
+	
+	isFlipped = !isFlipped;
+	if (isFlipped == false)
+	{
+		flipAngle = 0.0f;
+		// set frame width
+		setWidth(size.x);
 
+		// set frame height
+		setHeight(size.y);
+	}
+	else {
+		flipAngle = 90.0f;
+		// set frame width
+		setWidth(size.y);
+
+		// set frame height
+		setHeight(size.x);
+	}
 }
 
 bool MousePlayer::isColliding(GameObject * pOther) {
