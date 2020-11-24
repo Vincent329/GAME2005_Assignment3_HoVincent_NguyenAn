@@ -25,6 +25,7 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	velocityY = 0.0f;
 	initialVelocityX = 0.0f;
 	initialVelocityY = 0.0f;
+	mass = 5.0f;
 	lastUpdateTime = SDL_GetTicks();
 	initialPosition = getTransform()->position;
 	setType(PLAYER);
@@ -77,11 +78,8 @@ void MousePlayer::update()
 
 	float dTime = (currentTime - lastUpdateTime) / 1000.0f; // variable timestep
 
-	velocityX = (currentPosition.x - initialPosition.x) * deltaTime;
-	velocityY = (currentPosition.y - initialPosition.y) * deltaTime;
-
-	/*std::cout << "Velocity X: " << velocityX << std::endl;
-	std::cout << "Velocity Y: " << velocityY << std::endl;*/
+	//velocityX = (currentPosition.x - initialPosition.x) * dTime * 10.0f;
+	//velocityY = (currentPosition.y - initialPosition.y) * dTime * 10.0f;
 	//std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
 
 	lastUpdateTime = currentTime;

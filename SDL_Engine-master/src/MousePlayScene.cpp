@@ -35,8 +35,13 @@ void MousePlayScene::update()
 {
 	updateDisplayList();
 	SDL_GetMouseState(&xMouse, &yMouse);
-	m_pMousePlayer->mouseMovement(xMouse, yMouse);
-	std::cout << "Velocity X: " << m_pMousePlayer->getVelocityX() << std::endl;
+	//m_pMousePlayer->mouseMovement(xMouse, yMouse);
+	glm::vec2 direction = glm::vec2(xMouse - m_pMousePlayer->getTransform()->position.x, yMouse - m_pMousePlayer->getTransform()->position.y);
+	m_pMousePlayer->getTransform()->position += direction * (1/10.0f);
+	m_pMousePlayer->setVelocityX(direction.x/4);
+	m_pMousePlayer->setVelocityY(direction.y/4);
+
+	SDL_ShowCursor(1);
 
 	CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer); // figure out velocity response
 	//float collisionTime = CollisionManager::sweptAABB(m_pBall, m_pMousePlayer, normalX, normalY);
@@ -219,8 +224,9 @@ void MousePlayScene::GUI_Function() const
 	// Reset Button
 	if (ImGui::Button("Reset"))
 	{
-
+		m_pBall->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	}
+
 	ImGui::Separator();
 	// Shape Buttons
 	ImGui::Text("Shape Selection");
@@ -252,7 +258,7 @@ void MousePlayScene::GUI_Function() const
 
 	}
 
-	if (ImGui::SliderFloat("Ball Mass", &m_massBall, 0.0f, 10.0f))
+	if (ImGui::SliderFloat("Ball Mass", &m_massBall, 0.0f, 10.0f, "%.1f"))
 	{
 		
 		m_pBall->setMass(m_massBall);

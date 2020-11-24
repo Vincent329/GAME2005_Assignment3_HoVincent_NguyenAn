@@ -12,6 +12,7 @@ Target::Target()
 	/*getTransform()->position = glm::vec2(100.0f, 100.0f);
 	getRigidBody()->velocity = glm::vec2(0, 0);*/
 	m_reset();
+	mass = 2.5f;
 	getRigidBody()->isColliding = false;
 	setType(TARGET);
 }
@@ -73,25 +74,25 @@ void Target::m_checkBounds()
 	if (getTransform()->position.x >= (800.0f - getWidth()* 0.5f))
 	{
 		getTransform()->position.x = 800.0f - getWidth() * 0.5f;
-		getRigidBody()->velocity.x *= -0.9f;
+		getRigidBody()->velocity.x *= -0.75f;
 	}
 	// hits left wall
 	else if (getTransform()->position.x <= (0.0f + getWidth() * 0.5f))
 	{
 		getTransform()->position.x = 0 + getWidth() * 0.5f;
-		getRigidBody()->velocity.x *= -0.9f;
+		getRigidBody()->velocity.x *= -0.75f;
 	}
 	// hits bottom wall
 	if (getTransform()->position.y >= (600.0f - getWidth()* 0.5f)) 
 	{	
 		getTransform()->position.y = 600.0f - getWidth() * 0.5f;
-		getRigidBody()->velocity.y *= -0.9f;
+		getRigidBody()->velocity.y *= -0.75f;
 	}
 	// hits top wall
 	else if (getTransform()->position.y <= (0.0f + getWidth() * 0.5f))
 	{
 		getTransform()->position.y = 0 + getWidth() * 0.5f;
-		getRigidBody()->velocity.y *= -0.9f;
+		getRigidBody()->velocity.y *= -0.75f;
 
 	}
 }
