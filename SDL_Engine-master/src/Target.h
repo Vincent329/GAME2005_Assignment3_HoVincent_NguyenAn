@@ -20,6 +20,7 @@ public:
 	void setMass(float _nass);
 	float getInitialVelocityX();
 	float getInitialVelocityY();
+	void setWallCoefficient(float _wall);
 
 	//CollisionShape collisionType = CIRCLE;
 
@@ -32,6 +33,7 @@ private:
 	float mass;
 	float initialVelocityX;
 	float initialVelocityY;
+	float wallCoefficient;
 };
 
 

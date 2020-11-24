@@ -9,13 +9,17 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 		"../Assets/sprites/atlas.png",
 		"spritesheet");
 
-	setSpriteSheet(TextureManager::Instance()->getSpriteSheet("spritesheet"));
+	TextureManager::Instance()->load("../Assets/textures/paddle.png", "paddle");
 
+	setSpriteSheet(TextureManager::Instance()->getSpriteSheet("spritesheet"));
+	
+	auto size = TextureManager::Instance()->getTextureSize("paddle");
 	// set frame width
-	setWidth(53);
+	setWidth(size.x);
 
 	// set frame height
-	setHeight(58);
+	setHeight(size.y);
+
 
 	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
@@ -42,8 +46,9 @@ void MousePlayer::draw()
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
 
+	TextureManager::Instance()->draw("paddle", x, y, 0.0f, 255, true);
 	// draw the Player according to animation state
-	switch (m_currentAnimationState)
+	/*switch (m_currentAnimationState)
 	{
 	case PLAYER_IDLE_RIGHT:
 		TextureManager::Instance()->playAnimation("spritesheet", getAnimation("idle"),
@@ -63,7 +68,7 @@ void MousePlayer::draw()
 		break;
 	default:
 		break;
-	}
+	}*/
 
 }
 

@@ -17,6 +17,11 @@ MousePlayScene::~MousePlayScene()
 
 void MousePlayScene::draw()
 {
+	// draw the background
+	TextureManager::Instance()->draw("background", 400.0f, 300.0f, 0, 255, true, SDL_FLIP_NONE);
+	
+
+
 	if (EventManager::Instance().isIMGUIActive())
 	{
 		GUI_Function();
@@ -42,7 +47,7 @@ void MousePlayScene::update()
 	m_pMousePlayer->setVelocityY(direction.y/4);
 
 	SDL_ShowCursor(1);
-
+	
 	CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer); // figure out velocity response
 	//float collisionTime = CollisionManager::sweptAABB(m_pBall, m_pMousePlayer, normalX, normalY);
 	//CollisionManager::AABBCheck(m_pBall, m_pPlayer);
@@ -132,6 +137,8 @@ void MousePlayScene::handleEvents()
 
 void MousePlayScene::start()
 {
+	TextureManager::Instance()->load("../Assets/textures/background.jpg", "background");
+
 	// Load a sound
 	SoundManager::Instance().load("../Assets/audio/yay.ogg", "yay", SOUND_SFX);
 	
@@ -243,11 +250,13 @@ void MousePlayScene::GUI_Function() const
 	{
 
 	}
+
 	// --------------------Parameter changes-------------------------
 	static float m_massPlayer = 5.0f;
 	static float m_massBall = 2.5f;
+	static float m_wallCoefficient = 0.9;
 
-	if (ImGui::SliderFloat("Player Mass", &m_massPlayer, 0.0f, 10.0f, "%.1f"))
+	if (ImGui::SliderFloat("Player Mass", &m_massPlayer, 1.0f, 10.0f, "%.1f"))
 	{
 		m_pMousePlayer->setMass(m_massPlayer);
 		std::cout << "Mass Player: " << m_pMousePlayer->getMass() << std::endl;
@@ -258,7 +267,7 @@ void MousePlayScene::GUI_Function() const
 
 	}
 
-	if (ImGui::SliderFloat("Ball Mass", &m_massBall, 0.0f, 10.0f, "%.1f"))
+	if (ImGui::SliderFloat("Ball Mass", &m_massBall, 1.0f, 10.0f, "%.1f"))
 	{
 		
 		m_pBall->setMass(m_massBall);
@@ -269,16 +278,13 @@ void MousePlayScene::GUI_Function() const
 		}
 	}
 
+	if (ImGui::SliderFloat("Wall Coefficient of Momentum", &m_wallCoefficient, 0.0f, 1.0f))
+	{
+		m_pBall->setWallCoefficient(m_wallCoefficient);
+	}
+
 	ImGui::Separator();
 
-	static float float3[3] = { 0.0f, 1.0f, 1.5f };
-	if (ImGui::SliderFloat3("My Slider", float3, 0.0f, 2.0f))
-	{
-		std::cout << float3[0] << std::endl;
-		std::cout << float3[1] << std::endl;
-		std::cout << float3[2] << std::endl;
-		std::cout << "---------------------------\n";
-	}
 
 	ImGui::End();
 

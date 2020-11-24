@@ -246,6 +246,9 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 			const auto dot = Util::dot(attackVector, normal); // a float value, this is the angle to calculate the hit
 			const auto angle = acos(dot / Util::magnitude(attackVector)) * Util::Rad2Deg; // normalized
 
+			const auto topBoundAngle = atan((object2->getWidth() * 0.5f) / (object2->getHeight() * 0.5f)) * Util::Rad2Deg;
+			const auto bottomBoundAngle = atan((object2->getWidth() * 0.5f) / -(object2->getHeight() * 0.5f)) * Util::Rad2Deg + 180;
+
 			std::cout << "Angle: " << angle << std::endl;
 
 			switch (object2->getType()) {
@@ -264,7 +267,7 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 						// top right or top left
 					{
 
-						if (angle <= 45)
+						if (angle <= topBoundAngle)
 						{
 							Target* ball = static_cast<Target*>(object1);
 
@@ -306,7 +309,7 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 					if ((attackVector.x > 0 && attackVector.y > 0) || (attackVector.x < 0 && attackVector.y > 0))
 						// bottom right or bottom left
 					{
-						if (angle <= 135)
+						if (angle <= bottomBoundAngle)
 						{
 							std::cout << "Mass of Ball: " << static_cast<Target*>(object1)->getMass() << std::endl;
 							std::cout << "Mass of Paddle: " << static_cast<MousePlayer*>(object2)->getMass() << std::endl;
