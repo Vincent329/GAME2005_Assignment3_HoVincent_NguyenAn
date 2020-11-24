@@ -40,7 +40,7 @@ public:
 	void setInitialVelocityX(float _ivelocityX);
 	float getInitialVelocityY();
 	void setInitialVelocityY(float _ivelocityY);
-
+	void flipPaddle();
 
 	SceneState getCurrentState;
 

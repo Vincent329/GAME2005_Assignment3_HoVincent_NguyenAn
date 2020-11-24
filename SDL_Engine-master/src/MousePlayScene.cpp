@@ -28,7 +28,11 @@ void MousePlayScene::draw()
 	}
 
 	drawDisplayList();
-	Util::DrawCircle(m_pBall->getTransform()->position, std::max(m_pBall->getWidth() * 0.5f, m_pBall->getHeight() * 0.5f));
+	if (m_pBall->getCollisionType() == CIRCLE)
+		Util::DrawCircle(m_pBall->getTransform()->position, std::max(m_pBall->getWidth() * 0.5f, m_pBall->getHeight() * 0.5f));
+	else if (m_pBall->getCollisionType() == RECTANGLE)
+		Util::DrawRect(m_pBall->getTransform()->position - glm::vec2(m_pBall->getWidth() * 0.5, m_pBall->getHeight() * .5f), m_pBall->getWidth(), m_pBall->getHeight());
+
 	Util::DrawRect(m_pMousePlayer->getTransform()->position - glm::vec2(m_pMousePlayer->getWidth()*0.5, m_pMousePlayer->getHeight() *.5f), m_pMousePlayer->getWidth(), m_pMousePlayer->getHeight());
 
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
@@ -47,9 +51,16 @@ void MousePlayScene::update()
 	m_pMousePlayer->setVelocityY(direction.y/4);
 
 	SDL_ShowCursor(1);
-	
-	CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer); // figure out velocity response
-	//float collisionTime = CollisionManager::sweptAABB(m_pBall, m_pMousePlayer, normalX, normalY);
+
+	if (m_pBall->getCollisionType() == CIRCLE)
+	{
+		CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer);
+	}
+	else if (m_pBall->getCollisionType() == RECTANGLE)
+	{
+		CollisionManager::AABBCheck(m_pBall, m_pMousePlayer);
+	}
+	// figure out velocity response
 	//CollisionManager::AABBCheck(m_pBall, m_pPlayer);
 	//std::cout << collisionTime << std::endl;
 }
@@ -161,7 +172,7 @@ void MousePlayScene::start()
 
 	// Back Button
 	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
-	m_pBackButton->getTransform()->position = glm::vec2(300.0f, 400.0f);
+	m_pBackButton->getTransform()->position = glm::vec2(100.0f, 550.0f);
 	m_pBackButton->addEventListener(CLICK, [&]()-> void
 		{
 			m_pBackButton->setActive(false);
@@ -181,7 +192,7 @@ void MousePlayScene::start()
 
 	// Next Button
 	m_pNextButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
-	m_pNextButton->getTransform()->position = glm::vec2(500.0f, 400.0f);
+	m_pNextButton->getTransform()->position = glm::vec2(700.0f, 550.0f);
 	m_pNextButton->addEventListener(CLICK, [&]()-> void
 		{
 			m_pNextButton->setActive(false);
@@ -239,17 +250,14 @@ void MousePlayScene::GUI_Function() const
 	ImGui::Text("Shape Selection");
 	if (ImGui::Button("Circle"))
 	{
-
+		m_pBall->setCollisionType(CIRCLE);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Square"))
 	{
-
+		m_pBall->setCollisionType(RECTANGLE);
 	}
-	if (ImGui::Button("Triangle"))
-	{
-
-	}
+	
 
 	// --------------------Parameter changes-------------------------
 	static float m_massPlayer = 5.0f;

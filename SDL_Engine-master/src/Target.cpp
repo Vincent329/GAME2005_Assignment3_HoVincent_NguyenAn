@@ -5,6 +5,7 @@
 Target::Target()
 {
 	TextureManager::Instance()->load("../Assets/textures/energy.png","circle");
+	TextureManager::Instance()->load("../Assets/textures/crate.png", "square");
 
 	const auto size = TextureManager::Instance()->getTextureSize("circle");
 	setWidth(size.x);
@@ -14,6 +15,7 @@ Target::Target()
 	m_reset();
 	mass = 2.5f;
 	wallCoefficient = 0.9f;
+	setCollisionType(CIRCLE);
 	getRigidBody()->isColliding = false;
 	setType(TARGET);
 }
@@ -28,7 +30,15 @@ void Target::draw()
 	const auto y = getTransform()->position.y;
 
 	// draw the target
-	TextureManager::Instance()->draw("circle", x, y, 0, 255, true);
+	if (collisionType == CIRCLE)
+	{
+		TextureManager::Instance()->draw("circle", x, y, 0, 255, true);
+	}
+	else if (collisionType == RECTANGLE)
+	{
+		TextureManager::Instance()->draw("square", x, y, 0, 255, true);
+
+	}
 }
 
 void Target::update()
@@ -65,6 +75,28 @@ float Target::getInitialVelocityY()
 void Target::setWallCoefficient(float _wall)
 {
 	wallCoefficient = _wall;
+}
+
+CollisionShape Target::getCollisionType()
+{
+	return collisionType;
+}
+
+void Target::setCollisionType(CollisionShape shape)
+{
+	collisionType = shape;
+	if (collisionType == CIRCLE)
+	{
+		const auto size = TextureManager::Instance()->getTextureSize("circle");
+		setWidth(size.x);
+		setHeight(size.y);
+	}
+	else if (collisionType == RECTANGLE)
+	{
+		const auto size = TextureManager::Instance()->getTextureSize("square");
+		setWidth(size.x);
+		setHeight(size.y);
+	}
 }
 
 void Target::m_move()
@@ -107,4 +139,5 @@ void Target::m_reset()
 {
 	getTransform()->position = (glm::vec2(Util::RandomRange(0.0f, 800.0f - getWidth()), Util::RandomRange(0.0f, 600.0f - getWidth())));
 	getRigidBody()->velocity = (glm::vec2(Util::RandomRange(-1.0f, 1.0f), 3.0f));
+	setCollisionType(CIRCLE);
 }

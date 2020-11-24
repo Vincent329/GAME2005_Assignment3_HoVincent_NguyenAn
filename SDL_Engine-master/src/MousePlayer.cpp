@@ -182,6 +182,11 @@ void MousePlayer::setInitialVelocityY(float _ivelocityY)
 	initialVelocityY = _ivelocityY;
 }
 
+void MousePlayer::flipPaddle()
+{
+
+}
+
 bool MousePlayer::isColliding(GameObject * pOther) {
 	// Works for square sprites only
 	float myRadius = getWidth() * 0.5f;

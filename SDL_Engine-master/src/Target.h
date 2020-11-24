@@ -21,8 +21,10 @@ public:
 	float getInitialVelocityX();
 	float getInitialVelocityY();
 	void setWallCoefficient(float _wall);
+	CollisionShape getCollisionType();
+	void setCollisionType(CollisionShape shape);
 
-	//CollisionShape collisionType = CIRCLE;
+	CollisionShape collisionType;
 
 private:
 	void m_move();
