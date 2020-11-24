@@ -11,6 +11,7 @@ Target::Target()
 	setHeight(size.y);
 	/*getTransform()->position = glm::vec2(100.0f, 100.0f);
 	getRigidBody()->velocity = glm::vec2(0, 0);*/
+
 	m_reset();
 	getRigidBody()->isColliding = false;
 	setType(TARGET);
@@ -51,9 +52,21 @@ void Target::setMass(float _mass)
 	mass = _mass;
 }
 
+float Target::getInitialVelocityX()
+{
+	return initialVelocityX;
+}
+
+float Target::getInitialVelocityY()
+{
+	return initialVelocityY;
+}
+
 void Target::m_move()
 {
-	getTransform()->position = getTransform()->position + getRigidBody()->velocity * 5.0f;
+	getTransform()->position = getTransform()->position + getRigidBody()->velocity;
+	initialVelocityX = getRigidBody()->velocity.x;
+	initialVelocityY = getRigidBody()->velocity.y;
 	// movement logic
 }
 

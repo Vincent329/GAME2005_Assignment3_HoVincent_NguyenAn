@@ -3,6 +3,7 @@
 #define __TARGET__
 
 #include "DisplayObject.h"
+#include "CollisionShape.h"
 #include "Util.h"
 
 class Target final : public DisplayObject {
@@ -17,8 +18,10 @@ public:
 
 	float getMass();
 	void setMass(float _nass);
+	float getInitialVelocityX();
+	float getInitialVelocityY();
 
-	//void bounceWall;
+	//CollisionShape collisionType = CIRCLE;
 
 private:
 	void m_move();
@@ -27,8 +30,8 @@ private:
 
 	// Physics components
 	float mass;
-	float velocityMagnitude;
-	glm::vec2 velocity;
+	float initialVelocityX;
+	float initialVelocityY;
 };
 
 

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Plane.h"
 #include "Player.h"
+#include "MousePlayer.h"
 #include "Button.h"
 #include "Target.h"
 #include "Label.h"
@@ -41,12 +42,18 @@ private:
 	// Player Items
 	Plane* m_pPlaneSprite;
 	Player* m_pPlayer;
+	MousePlayer* m_pMousePlayer;
 	Enemy* m_Enemy;
 
 	// Bouncing Ball Test
 	Target* m_pBall;
-
 	bool m_playerFacingRight;
+
+	// physics properties
+	glm::vec2 momentum;
+	float massPlayer = 5.0f;
+	float massBall = 2.5f;
+
 
 	// UI Items
 	Button* m_pBackButton;

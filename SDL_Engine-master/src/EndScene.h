@@ -23,6 +23,7 @@ private:
 	Label* m_label{};
 
 	Button* m_pRestartButton;
+	Button* m_pRestartMouseButton;
 };
 
 #endif /* defined (__END_SCENE__) */

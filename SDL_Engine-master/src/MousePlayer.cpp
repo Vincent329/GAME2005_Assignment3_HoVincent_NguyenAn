@@ -1,28 +1,30 @@
-#include "Player.h"
+#include "MousePlayer.h"
 #include "Util.h"
 #include "TextureManager.h"
 
-Player::Player(): m_currentAnimationState(PLAYER_IDLE_RIGHT)
+MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 {
 	TextureManager::Instance()->loadSpriteSheet(
 		"../Assets/sprites/atlas.txt",
-		"../Assets/sprites/atlas.png", 
+		"../Assets/sprites/atlas.png",
 		"spritesheet");
 
 	setSpriteSheet(TextureManager::Instance()->getSpriteSheet("spritesheet"));
-	
+
 	// set frame width
 	setWidth(53);
 
 	// set frame height
 	setHeight(58);
 
-	getTransform()->position = glm::vec2(400.0f, 300.0f);
 	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
+	getTransform()->position = glm::vec2(400.0f, 300.0f);
 	getRigidBody()->isColliding = false;
 	velocityX = 0.0f;
 	velocityY = 0.0f;
+	initialVelocityX = 0.0f;
+	initialVelocityY = 0.0f;
 	lastUpdateTime = SDL_GetTicks();
 	initialPosition = getTransform()->position;
 	setType(PLAYER);
@@ -30,18 +32,17 @@ Player::Player(): m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	m_buildAnimations();
 }
 
-Player::~Player()
+MousePlayer::~MousePlayer()
 = default;
 
-void Player::draw()
+void MousePlayer::draw()
 {
-	
 	// alias for x and y
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
 
-	// draw the player according to animation state
-	switch(m_currentAnimationState)
+	// draw the Player according to animation state
+	switch (m_currentAnimationState)
 	{
 	case PLAYER_IDLE_RIGHT:
 		TextureManager::Instance()->playAnimation("spritesheet", getAnimation("idle"),
@@ -62,94 +63,123 @@ void Player::draw()
 	default:
 		break;
 	}
-	
+
 }
 
-void Player::update()
+void MousePlayer::update()
 {
 	// Testing velocity check
 
-	const float deltaTime = 1.0f / 60.f;
+	const float deltaTime = 1.0f / 60.f; // fixed timestep
 
 	int currentTime = SDL_GetTicks();
 	glm::vec2 currentPosition = getTransform()->position;
 
-	float dTime = (currentTime - lastUpdateTime) / 1000.0f;
-	//velocityX = (currentPosition.x - initialPosition.x) * deltaTime;
-	//velocityY = (currentPosition.y - initialPosition.y) * deltaTime;
+	float dTime = (currentTime - lastUpdateTime) / 1000.0f; // variable timestep
 
-	//std::cout << "Velocity X: " << velocityX << std::endl;
-	//std::cout << "Velocity Y: " << velocityY << std::endl;
-	//std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
+	velocityX = (currentPosition.x - initialPosition.x) * deltaTime;
+	velocityY = (currentPosition.y - initialPosition.y) * deltaTime;
+
+	/*std::cout << "Velocity X: " << velocityX << std::endl;
+	std::cout << "Velocity Y: " << velocityY << std::endl;*/
+	std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
 
 	lastUpdateTime = currentTime;
 	initialPosition = currentPosition;
+	initialVelocityX = velocityX;
+	initialVelocityX = velocityY;
 
-
-
-
-	// must normalize
-	float dirMagnitude = Util::magnitude(m_direction);
-	if (dirMagnitude > 0) {
-		// normalize the vector
-		getRigidBody()->acceleration = Util::normalize(m_direction) * ACCELERATION; // direction vector multiplied by acceleration when we have a direction input
-	}
-	else if (Util::magnitude(getRigidBody()->velocity) > 0) { // no input but we need to check if velocity still goes
-	 // normalize current velocity when we're not inputting anything, just give us direction vector when magnitude is 1
-		getRigidBody()->acceleration = Util::normalize(getRigidBody()->velocity) * -ACCELERATION; // so we make sure that our direction is slowing down every frame by making sure velocity goes opposite of our acceleration
-	}
-
-	// once velocity slows down to the point it's less than the magnitude of our acceleration.  Safety net friction
-	if (Util::magnitude(getRigidBody()->velocity) < Util::magnitude(getRigidBody()->acceleration) && Util::magnitude(getRigidBody()->velocity) > 0) {
-		getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
-		getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
-	}
-	getRigidBody()->velocity += getRigidBody()->acceleration;
-
-	glm::vec2 pos = getTransform()->position;
-	pos.x += getRigidBody()->velocity.x * deltaTime;
-	pos.y += getRigidBody()->velocity.y * deltaTime;
-	getTransform()->position = pos;
+	//// Calculate the velocity of the player during runtime
 }
 
-void Player::clean()
+void MousePlayer::clean()
 {
 }
 
 // MOVEMENT CODE
-void Player::moveLeft() {
+void MousePlayer::moveLeft() {
 	m_direction.x = -1;
 }
 
-void Player::moveRight() {
+void MousePlayer::moveRight() {
 	m_direction.x = 1;
 
 }
 
-void Player::moveUp() {
+void MousePlayer::moveUp() {
 	m_direction.y = -1;
 
 }
 
-void Player::moveDown() {
+void MousePlayer::moveDown() {
 	m_direction.y = 1;
 }
 
-void Player::stopMovingX() {
+void MousePlayer::stopMovingX() {
 	m_direction.x = 0;
 }
 
-void Player::stopMovingY() {
+void MousePlayer::stopMovingY() {
 	m_direction.y = 0;
 }
 
-void Player::mouseMovement(int x, int y)
+void MousePlayer::mouseMovement(int x, int y)
 {
 	getTransform()->position.x = x;
 	getTransform()->position.y = y;
 }
 
-bool Player::isColliding(GameObject* pOther) {
+float MousePlayer::getMass()
+{
+	return mass;
+}
+
+void MousePlayer::setMass(float m_mass)
+{
+	mass = m_mass;
+}
+
+float MousePlayer::getVelocityX()
+{
+	return velocityX;
+}
+
+void MousePlayer::setVelocityX(float _velocityX)
+{
+	velocityX = _velocityX;
+}
+
+float MousePlayer::getVelocityY()
+{
+	return velocityY;
+}
+
+void MousePlayer::setVelocityY(float _velocityY)
+{
+	velocityY = _velocityY;
+}
+
+float MousePlayer::getInitialVelocityX()
+{
+	return initialVelocityX;
+}
+
+void MousePlayer::setInitialVelocityX(float _ivelocityX)
+{
+	initialVelocityX = _ivelocityX;
+}
+
+float MousePlayer::getInitialVelocityY()
+{
+	return initialVelocityY;
+}
+
+void MousePlayer::setInitialVelocityY(float _ivelocityY)
+{
+	initialVelocityY = _ivelocityY;
+}
+
+bool MousePlayer::isColliding(GameObject * pOther) {
 	// Works for square sprites only
 	float myRadius = getWidth() * 0.5f;
 	float otherRadius = pOther->getWidth() * 0.5f;
@@ -157,7 +187,7 @@ bool Player::isColliding(GameObject* pOther) {
 	return (getDistance(pOther) <= myRadius + otherRadius);
 }
 
-float Player::getDistance(GameObject* pOther) {
+float MousePlayer::getDistance(GameObject * pOther) {
 	glm::vec2 myPos = getTransform()->position;
 	glm::vec2 otherPos = pOther->getTransform()->position;
 
@@ -168,12 +198,12 @@ float Player::getDistance(GameObject* pOther) {
 }
 
 
-void Player::setAnimationState(const PlayerAnimationState new_state)
+void MousePlayer::setAnimationState(const PlayerAnimationState new_state)
 {
 	m_currentAnimationState = new_state;
 }
 
-void Player::m_buildAnimations()
+void MousePlayer::m_buildAnimations()
 {
 	Animation idleAnimation = Animation();
 

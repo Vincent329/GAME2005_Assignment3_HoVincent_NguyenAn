@@ -24,19 +24,24 @@ void MousePlayScene::draw()
 
 	drawDisplayList();
 	Util::DrawCircle(m_pBall->getTransform()->position, std::max(m_pBall->getWidth() * 0.5f, m_pBall->getHeight() * 0.5f));
-	Util::DrawRect(m_pPlayer->getTransform()->position - glm::vec2(m_pPlayer->getWidth()*0.5, m_pPlayer->getHeight() *.5f), m_pPlayer->getWidth(), m_pPlayer->getHeight());
+	Util::DrawRect(m_pMousePlayer->getTransform()->position - glm::vec2(m_pMousePlayer->getWidth()*0.5, m_pMousePlayer->getHeight() *.5f), m_pMousePlayer->getWidth(), m_pMousePlayer->getHeight());
 
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
 }
+
+static float normalX = 0.0f, normalY = 0.0f;
 
 void MousePlayScene::update()
 {
 	updateDisplayList();
 	SDL_GetMouseState(&xMouse, &yMouse);
-	m_pPlayer->mouseMovement(xMouse, yMouse);
+	m_pMousePlayer->mouseMovement(xMouse, yMouse);
+	std::cout << "Velocity X: " << m_pMousePlayer->getVelocityX() << std::endl;
 
-	CollisionManager::circleAABBCheck(m_pBall, m_pPlayer); // figure out velocity response
-
+	CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer); // figure out velocity response
+	//float collisionTime = CollisionManager::sweptAABB(m_pBall, m_pMousePlayer, normalX, normalY);
+	//CollisionManager::AABBCheck(m_pBall, m_pPlayer);
+	//std::cout << collisionTime << std::endl;
 }
 
 void MousePlayScene::clean()
@@ -56,23 +61,23 @@ void MousePlayScene::handleEvents()
 			const auto deadZone = 10000;
 			if (EventManager::Instance().getGameController(0)->LEFT_STICK_X > deadZone)
 			{
-				m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
+				m_pMousePlayer->setAnimationState(PLAYER_RUN_RIGHT);
 				m_playerFacingRight = true;
 			}
 			else if (EventManager::Instance().getGameController(0)->LEFT_STICK_X < -deadZone)
 			{
-				m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
+				m_pMousePlayer->setAnimationState(PLAYER_RUN_LEFT);
 				m_playerFacingRight = false;
 			}
 			else
 			{
 				if (m_playerFacingRight)
 				{
-					m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
+					m_pMousePlayer->setAnimationState(PLAYER_IDLE_RIGHT);
 				}
 				else
 				{
-					m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
+					m_pMousePlayer->setAnimationState(PLAYER_IDLE_LEFT);
 				}
 			}
 		}
@@ -83,49 +88,26 @@ void MousePlayScene::handleEvents()
 	{
 		if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
 		{
-			m_pPlayer->setAnimationState(PLAYER_RUN_LEFT);
+			m_pMousePlayer->setAnimationState(PLAYER_RUN_LEFT);
 			m_playerFacingRight = false;
 		}
 		else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
 		{
-			m_pPlayer->setAnimationState(PLAYER_RUN_RIGHT);
+			m_pMousePlayer->setAnimationState(PLAYER_RUN_RIGHT);
 			m_playerFacingRight = true;
 		}
 		else
 		{
 			if (m_playerFacingRight)
 			{
-				m_pPlayer->setAnimationState(PLAYER_IDLE_RIGHT);
+				m_pMousePlayer->setAnimationState(PLAYER_IDLE_RIGHT);
 			}
 			else
 			{
-				m_pPlayer->setAnimationState(PLAYER_IDLE_LEFT);
+				m_pMousePlayer->setAnimationState(PLAYER_IDLE_LEFT);
 			}
 		}
 	}
-	//if (EventManager::Instance().isKeyDown(SDL_SCANCODE_A))
-	//{
-	//	m_pPlayer->moveLeft();
-	//}
-	//else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_D))
-	//{
-	//	m_pPlayer->moveRight();
-	//}
-	//else
-	//{
-	//	m_pPlayer->stopMovingX();
-	//}
-
-	//if (EventManager::Instance().isKeyDown(SDL_SCANCODE_W)) { // separate these if stateme
-	//	m_pPlayer->moveUp();
-	//}
-	//else if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S)) {
-	//	m_pPlayer->moveDown();
-	//}
-	//else
-	//{
-	//	m_pPlayer->stopMovingY();
-	//}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
@@ -156,12 +138,8 @@ void MousePlayScene::start()
 	addChild(m_pPlaneSprite);
 
 	// Player Sprite
-	m_pPlayer = new Player();
-	addChild(m_pPlayer);
-
-	//// enemy not spawned? active is false.. don't even need
-	//m_Enemy = new Enemy();
-	//addChild(m_Enemy);
+	m_pMousePlayer = new MousePlayer();
+	addChild(m_pMousePlayer);
 
 	// Instantiate the target
 	m_pBall = new Target();
@@ -258,6 +236,31 @@ void MousePlayScene::GUI_Function() const
 	if (ImGui::Button("Triangle"))
 	{
 
+	}
+	// --------------------Parameter changes-------------------------
+	static float m_massPlayer = 5.0f;
+	static float m_massBall = 2.5f;
+
+	if (ImGui::SliderFloat("Player Mass", &m_massPlayer, 0.0f, 10.0f, "%.1f"))
+	{
+		m_pMousePlayer->setMass(m_massPlayer);
+		std::cout << "Mass Player: " << m_pMousePlayer->getMass() << std::endl;
+		if (m_massBall > m_massPlayer)
+		{
+			m_massBall = m_massPlayer;
+		}
+
+	}
+
+	if (ImGui::SliderFloat("Ball Mass", &m_massBall, 0.0f, 10.0f))
+	{
+		
+		m_pBall->setMass(m_massBall);
+		std::cout << "Mass Ball: " << m_pBall->getMass() << std::endl;
+		if (m_massBall > m_massPlayer)
+		{
+			m_massPlayer = m_massBall;
+		}
 	}
 
 	ImGui::Separator();

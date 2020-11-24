@@ -7,6 +7,8 @@
 
 #include "GameObject.h"
 #include "ship.h"
+#include "MousePlayer.h"
+#include "Target.h"
 #include <GLM/gtx/norm.hpp>
 #include "SoundManager.h"
 
@@ -26,11 +28,14 @@ public:
 	static int circleAABBsquaredDistance(glm::vec2 circle_centre, int circle_radius, glm::vec2 box_start, int box_width, int box_height);
 	static bool circleAABBCheck(GameObject* object1, GameObject* object2);
 
+	static bool pointRectCheck(glm::vec2 point, glm::vec2 rect_start, float rect_width, float rect_height);
+
+	// Calculate momentum response
+	// static float velocityResponse(GameObject* object1, GameObject* object2);
+
 	// Custom collision code
 	static bool collisionCheck(GameObject* object1, GameObject* object2); // structures
-
-	static bool pointRectCheck(glm::vec2 point, glm::vec2 rect_start, float rect_width, float rect_height);
-	
+	static float sweptAABB(GameObject* object1, GameObject* object2, float& normalx, float& normaly);
 private:
 	CollisionManager();
 	~CollisionManager();
