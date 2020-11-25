@@ -44,7 +44,7 @@ void MousePlayScene::update()
 	SDL_GetMouseState(&xMouse, &yMouse);
 	//m_pMousePlayer->mouseMovement(xMouse, yMouse);
 	glm::vec2 direction = glm::vec2(xMouse - m_pMousePlayer->getTransform()->position.x, yMouse - m_pMousePlayer->getTransform()->position.y);
-	m_pMousePlayer->getTransform()->position += direction * (1/5.0f);
+	m_pMousePlayer->getTransform()->position += direction;
 	m_pMousePlayer->setVelocityX(direction.x/4);
 	m_pMousePlayer->setVelocityY(direction.y/4);
 
@@ -287,6 +287,12 @@ void MousePlayScene::GUI_Function() const
 	static float m_massPlayer = 5.0f;
 	static float m_massBall = 2.5f;
 	static float m_wallCoefficient = 0.9;
+	static float m_pixels = 5.0f;
+
+	if (ImGui::SliderFloat("Pixels Per Meter", &m_pixels, 1.0f, 10.0f, "%.1f"))	{	
+		m_pMousePlayer->setPPM(m_pixels);
+		std::cout << "Pixels: " << m_pMousePlayer->getPPM() << std::endl;
+	}
 
 	if (ImGui::SliderFloat("Player Mass", &m_massPlayer, 1.0f, 10.0f, "%.1f"))
 	{

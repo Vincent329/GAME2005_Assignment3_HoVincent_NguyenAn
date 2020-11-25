@@ -42,12 +42,14 @@ public:
 	void setInitialVelocityY(float _ivelocityY);
 	void flipPaddle();
 
-	SceneState getCurrentState;
-
 	bool isColliding(GameObject*);
 	float getDistance(GameObject*);
 
 	// Physics components
+	float getPPM();
+	void setPPM(float pixels);
+	bool getIsPlaying();
+	void setIsPlaying(bool play);
 
 	// setters
 	void setAnimationState(PlayerAnimationState new_state);
@@ -64,6 +66,8 @@ private:
 	float flipAngle;
 
 	//Physics properties
+	float m_PPM;
+	bool isPlaying;
 	float mass;
 	int lastUpdateTime;
 	glm::vec2 initialPosition;

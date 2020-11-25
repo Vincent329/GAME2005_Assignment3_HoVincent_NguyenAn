@@ -109,16 +109,17 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 							std::cout << "Mass of Ball: " << static_cast<Target*>(object1)->getMass() << std::endl;
 							std::cout << "Mass of Paddle: " << static_cast<MousePlayer*>(object2)->getMass() << std::endl;
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityY() << std::endl;
+							
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 							
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
@@ -137,16 +138,15 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityX() << std::endl;
 
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
-							
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
 							{
@@ -168,16 +168,16 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityX() << std::endl;
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass()))* player->getVelocityX();	
-							std::cout << "ChangeVelocityX: " << changeVelocityX << std::endl;
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
+
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
 							{
 								object1->getRigidBody()->velocity = glm::vec2(changeVelocityX, changeVelocityY);
@@ -193,15 +193,15 @@ bool CollisionManager::AABBCheck(GameObject* object1, GameObject* object2)
 
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityY() << std::endl;
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
 							{
@@ -415,15 +415,15 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 							std::cout << "Mass of Paddle: " << static_cast<MousePlayer*>(object2)->getMass() << std::endl;
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityY() << std::endl;
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
 								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
+									/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
 								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 							
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
 							{
@@ -443,15 +443,15 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityX() << std::endl;
 
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 							
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
@@ -474,15 +474,15 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityX() << std::endl;
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
 								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass()))* player->getVelocityX();	
+									/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
 								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)
 							{
@@ -499,15 +499,15 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 
 							std::cout << "Velocity of hit: " << static_cast<MousePlayer*>(object2)->getVelocityY() << std::endl;
 							changeVelocityX =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityX()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityX();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityX()) * player->getPPM();
 							changeVelocityY =
-								((ball->getMass() - player->getMass())
+								(((ball->getMass() - player->getMass())
 									/ (ball->getMass() + player->getMass())) * ball->getInitialVelocityY()
-								+ ((2 * player->getMass())
-									/ (ball->getMass() + player->getMass())) * player->getVelocityY();
+									+ ((2 * player->getMass())
+										/ (ball->getMass() + player->getMass())) * player->getVelocityY()) * player->getPPM();
 
 
 							if (Util::magnitude(glm::vec2(player->getVelocityX(), player->getVelocityY())) > 0.5f)

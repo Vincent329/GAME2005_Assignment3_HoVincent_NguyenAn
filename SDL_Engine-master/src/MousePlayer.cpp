@@ -30,7 +30,11 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	initialVelocityY = 0.0f;
 	mass = 5.0f;
 	isFlipped = false;
-	flipAngle = 0.0f;
+	flipAngle = 0.0f; 
+
+	m_PPM = 2.0f;
+	isPlaying = true;
+
 	lastUpdateTime = SDL_GetTicks();
 	initialPosition = getTransform()->position;
 	setType(PLAYER);
@@ -220,6 +224,26 @@ float MousePlayer::getDistance(GameObject * pOther) {
 	return sqrt(a * a + b * b);
 }
 
+
+float MousePlayer::getPPM()
+{
+	return m_PPM;
+}
+
+void MousePlayer::setPPM(float pixels)
+{
+	m_PPM = pixels;
+}
+
+bool MousePlayer::getIsPlaying()
+{
+	return isPlaying;
+}
+
+void MousePlayer::setIsPlaying(bool play)
+{
+	isPlaying = play;
+}
 
 void MousePlayer::setAnimationState(const PlayerAnimationState new_state)
 {
