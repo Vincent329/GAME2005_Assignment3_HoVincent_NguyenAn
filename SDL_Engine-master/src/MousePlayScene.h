@@ -26,6 +26,10 @@ public:
 	virtual void handleEvents() override;
 	virtual void start() override;
 
+	float getPPM();
+	void setPPM(float _PPM);
+	bool getIsPlaying();
+	void setIsPlaying(bool _play);
 	//// physics calculations
 	//float subtractMomentum(float mass, float velocity);
 	//float calculateVelocity(float mass, float momentumm);
@@ -36,9 +40,13 @@ private:
 	void GUI_Function() const;
 	std::string m_guiTitle;
 
-	glm::vec2 m_mousePosition; // figure how to get this
+	// Mouse Coordinates
 	int xMouse, yMouse;
 	
+	// PPM Scale
+	float m_PPM;
+	bool isPlaying;
+
 	// Player Items
 	Plane* m_pPlaneSprite;
 	Player* m_pPlayer;

@@ -19,8 +19,6 @@ void MousePlayScene::draw()
 {
 	// draw the background
 	TextureManager::Instance()->draw("background", 400.0f, 300.0f, 0, 255, true, SDL_FLIP_NONE);
-	
-
 
 	if (EventManager::Instance().isIMGUIActive())
 	{
@@ -46,11 +44,10 @@ void MousePlayScene::update()
 	SDL_GetMouseState(&xMouse, &yMouse);
 	//m_pMousePlayer->mouseMovement(xMouse, yMouse);
 	glm::vec2 direction = glm::vec2(xMouse - m_pMousePlayer->getTransform()->position.x, yMouse - m_pMousePlayer->getTransform()->position.y);
-	m_pMousePlayer->getTransform()->position += direction * (1/10.0f);
+	m_pMousePlayer->getTransform()->position += direction * (1/5.0f);
 	m_pMousePlayer->setVelocityX(direction.x/4);
 	m_pMousePlayer->setVelocityY(direction.y/4);
 
-	SDL_ShowCursor(1);
 
 	if (m_pBall->getCollisionType() == CIRCLE)
 	{
@@ -60,9 +57,9 @@ void MousePlayScene::update()
 	{
 		CollisionManager::AABBCheck(m_pBall, m_pMousePlayer);
 	}
+
+	SDL_ShowCursor(1);
 	// figure out velocity response
-	//CollisionManager::AABBCheck(m_pBall, m_pPlayer);
-	//std::cout << collisionTime << std::endl;
 }
 
 void MousePlayScene::clean()
@@ -169,6 +166,7 @@ void MousePlayScene::start()
 	addChild(m_pBall);
 
 	m_playerFacingRight = true;
+	setPPM(5.0f);
 
 	// Back Button
 	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
@@ -218,6 +216,26 @@ void MousePlayScene::start()
 	addChild(m_pInstructionsLabel);
 }
 
+float MousePlayScene::getPPM()
+{
+	return m_PPM;
+}
+
+void MousePlayScene::setPPM(float _PPM)
+{
+	m_PPM = _PPM;
+}
+
+bool MousePlayScene::getIsPlaying()
+{
+	return isPlaying;
+}
+
+void MousePlayScene::setIsPlaying(bool _play)
+{
+	isPlaying = _play;
+}
+
 void MousePlayScene::GUI_Function() const
 {
 	// Always open with a NewFrame
@@ -236,13 +254,14 @@ void MousePlayScene::GUI_Function() const
 	// Play Button
 	if (ImGui::Button("Play"))
 	{
-
+		
 	}
 
 	// Reset Button
 	if (ImGui::Button("Reset"))
 	{
 		m_pBall->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
+		m_pBall->getTransform()->position = glm::vec2(400.0f, 300.0f);
 	}
 
 	ImGui::Separator();

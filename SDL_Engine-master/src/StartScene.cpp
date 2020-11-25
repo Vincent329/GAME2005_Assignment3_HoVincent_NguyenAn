@@ -51,9 +51,17 @@ void StartScene::start()
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
-	m_pInstructionsLabel = new Label("Press 1 to Play", "Consolas", 40, blue, glm::vec2(400.0f, 120.0f));
+	/*m_pInstructionsLabel = new Label("Press 1 to Play", "Consolas", 40, blue, glm::vec2(400.0f, 120.0f));
 	m_pInstructionsLabel->setParent(this);
-	addChild(m_pInstructionsLabel);
+	addChild(m_pInstructionsLabel);*/
+
+	m_Scene1 = new Label("Click here for Scene 1", "Consolas", 15,black, glm::vec2(200.0f, 350.0f));
+	m_Scene1->setParent(this);
+	addChild(m_Scene1);
+
+	m_Scene2 = new Label("Click here for Scene 2", "Consolas", 15,black, glm::vec2(600.0f, 350.0f));
+	m_Scene2->setParent(this);
+	addChild(m_Scene2);
 
 	m_Vincent = new Label("Vincent Ho - 101334300", "Consolas", 20, black, glm::vec2(400.0F, 200.0f));
 	m_Vincent->setParent(this);

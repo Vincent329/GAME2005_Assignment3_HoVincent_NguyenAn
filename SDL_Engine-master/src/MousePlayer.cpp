@@ -20,7 +20,6 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	// set frame height
 	setHeight(size.y);
 
-
 	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	getTransform()->position = glm::vec2(400.0f, 300.0f);
@@ -88,11 +87,6 @@ void MousePlayer::update()
 	//velocityX = (currentPosition.x - initialPosition.x) * dTime * 10.0f;
 	//velocityY = (currentPosition.y - initialPosition.y) * dTime * 10.0f;
 	//std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
-
-	lastUpdateTime = currentTime;
-	initialPosition = currentPosition;
-	initialVelocityX = velocityX;
-	initialVelocityX = velocityY;
 
 	//// Calculate the velocity of the player during runtime
 }

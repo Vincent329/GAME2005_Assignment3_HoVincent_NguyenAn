@@ -24,6 +24,9 @@ private:
 	Label* m_pStartLabel{};
 	Label* m_pInstructionsLabel{};
 
+	Label* m_Scene1;
+	Label* m_Scene2;
+
 	Label* m_Vincent;
 	Label* m_An;
 
