@@ -22,16 +22,22 @@ public:
 	virtual void clean() override;
 	virtual void handleEvents() override;
 	virtual void start() override;
+	bool isPlaying = false;
 
 
 private:
 	// IMGUI Function
-	void GUI_Function() const;
+	void GUI_Function();
 	std::string m_guiTitle;
 	
 	// bullet manager items
-	const float bulletSpawnTimerDuration = 500.0f; // 3 seconds = 3000 milliseconds
+	float bulletSpawnTimerDuration = 500.0f; // 3 seconds = 3000 milliseconds
 	float bulletSpawnTimerStart;
+
+	// imgui items
+	float initialBulletVelocity = 50.0f;
+	float gravityFactor = 9.8f;
+	float acceleration = 5.0f;
 	
 	glm::vec2 m_mousePosition;
 
@@ -39,7 +45,6 @@ private:
 	Player* m_pPlayer;
 	Enemy* m_Enemy;
 	BulletPool* m_pPool;
-	//BulletManager* m_pBulletManager;
 
 	bool m_playerFacingRight;
 
@@ -48,7 +53,7 @@ private:
 	Button* m_pNextButton;
 	Label* m_pInstructionsLabel;
 
-	void SpawnBullet();
+	void SpawnBullet(); // spawn the bullet
 
 	//void SpawnBullet();
 };

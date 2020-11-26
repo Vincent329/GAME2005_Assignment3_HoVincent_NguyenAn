@@ -15,9 +15,14 @@ public:
 	virtual void update() override;
 	virtual void clean() override;
 
+	glm::vec2 lastPosition;
+	float initialVelocity;
+	float gravity;
+
 	void Reset();
 
 	bool active = false;
+	bool showHitbox = false;
 };
 
 #endif

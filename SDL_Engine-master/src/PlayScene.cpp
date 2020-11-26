@@ -17,6 +17,8 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
+	TextureManager::Instance()->draw("background", 400.0f, 300.0f, 0, 255, true, SDL_FLIP_NONE);
+
 	if(EventManager::Instance().isIMGUIActive())
 	{
 		GUI_Function();
@@ -29,18 +31,26 @@ void PlayScene::draw()
 void PlayScene::update()
 {
 	updateDisplayList();
-	if (SDL_GetTicks() - bulletSpawnTimerStart >= bulletSpawnTimerDuration)
+	if (isPlaying)
 	{
-		SpawnBullet();
+		if (SDL_GetTicks() - bulletSpawnTimerStart >= bulletSpawnTimerDuration)
+		{
+			SpawnBullet();
+		}
 	}
 
 	std::vector<Enemy*>& activeBullets = m_pPool->all;
-
 
 	for (std::vector<Enemy*>::iterator myiter = activeBullets.begin(); myiter != activeBullets.end(); myiter++)
 	{
 		Enemy* bullet = *myiter;
 		if (bullet->active && bullet->getTransform()->position.y >= 650) // if the bullet is alive and hits the bottom
+		{
+			m_pPool->despawn(bullet); // despawn the bullet
+			break;
+		}
+		/*if (bullet->active && CollisionManager::circleAABBCheck(bullet, m_pPlayer))*/
+		if (bullet->active && (CollisionManager::collisionCheck(bullet->getTransform()->position, m_pPlayer->getBoundingBoxTop()) || CollisionManager::collisionCheck(bullet->getTransform()->position, m_pPlayer->getBoundingBoxBottom())))
 		{
 			m_pPool->despawn(bullet); // despawn the bullet
 			break;
@@ -155,12 +165,17 @@ void PlayScene::handleEvents()
 
 void PlayScene::start()
 {
+
+	TextureManager::Instance()->load("../Assets/textures/space.jpg", "background");
+	// Load a sound
+	SoundManager::Instance().load("../Assets/audio/hitsound.ogg", "yay", SOUND_SFX);
+
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 	
 	// Plane Sprite
-	m_pPlaneSprite = new Plane();
-	addChild(m_pPlaneSprite);
+	//m_pPlaneSprite = new Plane();
+	//addChild(m_pPlaneSprite);
 
 	// Player Sprite
 	m_pPlayer = new Player();
@@ -186,7 +201,7 @@ void PlayScene::start()
 
 	// Back Button
 	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
-	m_pBackButton->getTransform()->position = glm::vec2(300.0f, 400.0f);
+	m_pBackButton->getTransform()->position = glm::vec2(100.0f, 550.0f);
 	m_pBackButton->addEventListener(CLICK, [&]()-> void
 	{
 		m_pBackButton->setActive(false);
@@ -206,7 +221,7 @@ void PlayScene::start()
 
 	// Next Button
 	m_pNextButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
-	m_pNextButton->getTransform()->position = glm::vec2(500.0f, 400.0f);
+	m_pNextButton->getTransform()->position = glm::vec2(700.0f, 550.0f);
 	m_pNextButton->addEventListener(CLICK, [&]()-> void
 	{
 		m_pNextButton->setActive(false);
@@ -238,12 +253,12 @@ void PlayScene::SpawnBullet()
 	Enemy* bullet = m_pPool->spawn(); // every half a second when the function is called, we spawn the bullet by setting values and pushing it onto the queue
 		if (bullet)
 		{
-			bullet->getTransform()->position = glm::vec2(50 + rand() % 700, 0);
+			bullet->getTransform()->position = glm::vec2(50 + rand() % 700, -100 + rand() % 100 );
 		}
 		bulletSpawnTimerStart = SDL_GetTicks();
 }
 
-void PlayScene::GUI_Function() const
+void PlayScene::GUI_Function()
 {
 	// Always open with a NewFrame
 	ImGui::NewFrame();
@@ -251,23 +266,58 @@ void PlayScene::GUI_Function() const
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
-
-	if(ImGui::Button("My Button"))
+	ImGui::Begin("Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
+	if (ImGui::Button("Play Scene"))
 	{
-		std::cout << "My Button Pressed" << std::endl;
+		isPlaying = (isPlaying) ? false : true;
+		std::cout << isPlaying << std::endl;
 	}
 
+	if (ImGui::SliderFloat("Bullet Initial Velocity", &initialBulletVelocity, 1.0f, 500.0f, "%.1f"))
+	{
+		std::vector<Enemy*>& activeBullets = m_pPool->all;
+		for (std::vector<Enemy*>::iterator myiter = activeBullets.begin(); myiter != activeBullets.end(); myiter++)
+		{
+			Enemy* bullet = *myiter;
+			bullet->initialVelocity = initialBulletVelocity;
+		}
+	}
+
+	if (ImGui::SliderFloat("Bullet Gravity", &gravityFactor, 1.0f, 50.0f, "%.1f"))
+	{
+		std::vector<Enemy*>& activeBullets = m_pPool->all;
+		for (std::vector<Enemy*>::iterator myiter = activeBullets.begin(); myiter != activeBullets.end(); myiter++)
+		{
+			Enemy* bullet = *myiter;
+			bullet->gravity = gravityFactor;
+		}
+	}
+
+	if (ImGui::SliderFloat("Player Acceleration", &acceleration, 0.0f, 50.0f, "%.1f"))
+	{
+		m_pPlayer->setAcceleration(acceleration);
+	}
+
+	ImGui::SliderFloat("Spawn Rate", &bulletSpawnTimerDuration, 100.0f, 1000.0f, "%.1f");
+
+	if (ImGui::Button("Show Ship Hitbox"))
+	{
+		if (m_pPlayer->getShowHitbox() == true)
+			m_pPlayer->setShowHitbox(false);
+		else
+			m_pPlayer->setShowHitbox(true);
+	}
+	if (ImGui::Button("Show Bullet Hitbox"))
+	{
+		std::vector<Enemy*>& activeBullets = m_pPool->all;
+		for (std::vector<Enemy*>::iterator myiter = activeBullets.begin(); myiter != activeBullets.end(); myiter++)
+		{
+			Enemy* bullet = *myiter;
+			bullet->showHitbox = (bullet->showHitbox) ? false : true;
+		}
+	}
+	
 	ImGui::Separator();
-
-	static float float3[3] = { 0.0f, 1.0f, 1.5f };
-	if(ImGui::SliderFloat3("My Slider", float3, 0.0f, 2.0f))
-	{
-		std::cout << float3[0] << std::endl;
-		std::cout << float3[1] << std::endl;
-		std::cout << float3[2] << std::endl;
-		std::cout << "---------------------------\n";
-	}
 	
 	ImGui::End();
 

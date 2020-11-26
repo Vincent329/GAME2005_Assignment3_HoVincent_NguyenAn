@@ -3,6 +3,7 @@
 #define __PLAYER__
 
 #include "PlayerAnimationState.h"
+#include "SDL.h"
 #include "Sprite.h"
 #include "SceneState.h"
 
@@ -28,7 +29,18 @@ public:
 	// Mouse logic
 	int xMouse, yMouse;
 	void mouseMovement(int x, int y);
-	SceneState getCurrentState;
+	void checkBounds();
+	float getAcceleration();
+	void setAcceleration(float accel);
+
+	// Hitbox implementation
+	SDL_Rect getBoundingBoxTop();
+	SDL_Rect getBoundingBoxBottom();
+
+	void updateBoundingBoxTop();
+	void updateBoundingBoxBottom();
+	bool getShowHitbox();
+	void setShowHitbox(bool box);
 
 	bool isColliding(GameObject*);
 	float getDistance(GameObject*);
@@ -43,14 +55,16 @@ private:
 
 	PlayerAnimationState m_currentAnimationState;
 
-	const float ACCELERATION = 10.0F;
+	float acceleration = 5.0F;
 	glm::vec2 m_direction;
+	bool showHitbox;
 
 	//testing
 	int lastUpdateTime;
 	glm::vec2 initialPosition;
 	float velocityX, velocityY;
-
+	SDL_Rect boundingBoxTop;
+	SDL_Rect boundingBoxBottom;
 	// Physics Components for momentum
 };
 

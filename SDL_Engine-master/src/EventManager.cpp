@@ -289,7 +289,7 @@ bool EventManager::isIMGUIActive()
 }
 
 EventManager::EventManager():
-    m_isIMGUIActive(false), m_keyStates(nullptr), m_mouseWheel(0), m_isActive(true), m_io(ImGui::GetIO())
+    m_isIMGUIActive(true), m_keyStates(nullptr), m_mouseWheel(0), m_isActive(true), m_io(ImGui::GetIO())
 {
 	// initialize mouse position
     m_mousePosition = glm::vec2(0.0f, 0.0f);

@@ -26,8 +26,7 @@ public:
 	virtual void handleEvents() override;
 	virtual void start() override;
 
-	float getPPM();
-	void setPPM(float _PPM);
+
 	bool getIsPlaying();
 	void setIsPlaying(bool _play);
 	// bool isPlaying;
@@ -57,7 +56,6 @@ private:
 	// physics properties
 	float massPlayer = 5.0f;
 	float massBall = 2.5f;
-
 
 	// UI Items
 	Button* m_pBackButton;

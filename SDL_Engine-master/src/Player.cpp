@@ -11,6 +11,14 @@ Player::Player(): m_currentAnimationState(PLAYER_IDLE_RIGHT)
 
 	setSpriteSheet(TextureManager::Instance()->getSpriteSheet("spritesheet"));
 	
+	TextureManager::Instance()->load("../Assets/textures/galaga.png", "galaga");
+	auto size = TextureManager::Instance()->getTextureSize("galaga");
+	// set frame width
+	setWidth(size.x);
+
+	// set frame height
+	setHeight(size.y);
+
 	// set frame width
 	setWidth(53);
 
@@ -21,10 +29,7 @@ Player::Player(): m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->isColliding = false;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
-	lastUpdateTime = SDL_GetTicks();
-	initialPosition = getTransform()->position;
+	showHitbox = false;
 	setType(PLAYER);
 
 	m_buildAnimations();
@@ -39,9 +44,15 @@ void Player::draw()
 	// alias for x and y
 	const auto x = getTransform()->position.x;
 	const auto y = getTransform()->position.y;
+	glm::vec2 startPos = glm::vec2(x - getWidth() / 2, y - getHeight() / 2);
 
+	TextureManager::Instance()->draw("galaga", x, y, 0, 255, true);
+
+	//Util::DrawRect(startPos, getWidth(), getHeight());
+	updateBoundingBoxTop();
+	updateBoundingBoxBottom();
 	// draw the player according to animation state
-	switch(m_currentAnimationState)
+	/*switch(m_currentAnimationState)
 	{
 	case PLAYER_IDLE_RIGHT:
 		TextureManager::Instance()->playAnimation("spritesheet", getAnimation("idle"),
@@ -61,7 +72,7 @@ void Player::draw()
 		break;
 	default:
 		break;
-	}
+	}*/
 	
 }
 
@@ -71,32 +82,15 @@ void Player::update()
 
 	const float deltaTime = 1.0f / 60.f;
 
-	int currentTime = SDL_GetTicks();
-	glm::vec2 currentPosition = getTransform()->position;
-
-	float dTime = (currentTime - lastUpdateTime) / 1000.0f;
-	//velocityX = (currentPosition.x - initialPosition.x) * deltaTime;
-	//velocityY = (currentPosition.y - initialPosition.y) * deltaTime;
-
-	//std::cout << "Velocity X: " << velocityX << std::endl;
-	//std::cout << "Velocity Y: " << velocityY << std::endl;
-	//std::cout << "Velocity magnitude: " << Util::magnitude(glm::vec2(velocityX, velocityY)) << std::endl;
-
-	lastUpdateTime = currentTime;
-	initialPosition = currentPosition;
-
-
-
-
 	// must normalize
 	float dirMagnitude = Util::magnitude(m_direction);
 	if (dirMagnitude > 0) {
 		// normalize the vector
-		getRigidBody()->acceleration = Util::normalize(m_direction) * ACCELERATION; // direction vector multiplied by acceleration when we have a direction input
+		getRigidBody()->acceleration = Util::normalize(m_direction) * acceleration; // direction vector multiplied by acceleration when we have a direction input
 	}
 	else if (Util::magnitude(getRigidBody()->velocity) > 0) { // no input but we need to check if velocity still goes
 	 // normalize current velocity when we're not inputting anything, just give us direction vector when magnitude is 1
-		getRigidBody()->acceleration = Util::normalize(getRigidBody()->velocity) * -ACCELERATION; // so we make sure that our direction is slowing down every frame by making sure velocity goes opposite of our acceleration
+		getRigidBody()->acceleration = Util::normalize(getRigidBody()->velocity) * -acceleration; // so we make sure that our direction is slowing down every frame by making sure velocity goes opposite of our acceleration
 	}
 
 	// once velocity slows down to the point it's less than the magnitude of our acceleration.  Safety net friction
@@ -110,6 +104,8 @@ void Player::update()
 	pos.x += getRigidBody()->velocity.x * deltaTime;
 	pos.y += getRigidBody()->velocity.y * deltaTime;
 	getTransform()->position = pos;
+
+	checkBounds();
 }
 
 void Player::clean()
@@ -147,6 +143,81 @@ void Player::mouseMovement(int x, int y)
 {
 	getTransform()->position.x = x;
 	getTransform()->position.y = y;
+}
+
+void Player::checkBounds()
+{
+	// hits right wall 
+	if (getTransform()->position.x >= (800.0f - getWidth() * 0.5f))
+	{
+		getTransform()->position.x = 800.0f - getWidth() * 0.5f;
+	}
+	// hits left wall
+	else if (getTransform()->position.x <= (0.0f + getWidth() * 0.5f))
+	{
+		getTransform()->position.x = 0 + getWidth() * 0.5f;
+	}
+	// hits bottom wall
+	if (getTransform()->position.y >= (600.0f - getWidth() * 0.5f))
+	{
+		getTransform()->position.y = 600.0f - getWidth() * 0.5f;
+	}
+	// hits top wall
+	else if (getTransform()->position.y <= (0.0f + getWidth() * 0.5f))
+	{
+		getTransform()->position.y = 0 + getWidth() * 0.5f;
+
+	}
+}
+
+float Player::getAcceleration()
+{
+	return acceleration;
+}
+
+void Player::setAcceleration(float accel)
+{
+	acceleration = accel;
+}
+
+SDL_Rect Player::getBoundingBoxTop()
+{
+	return boundingBoxTop;
+}
+
+SDL_Rect Player::getBoundingBoxBottom()
+{
+	return boundingBoxBottom;
+}
+
+void Player::updateBoundingBoxTop()
+{
+	boundingBoxTop.w = getWidth() * 0.5;
+	boundingBoxTop.h = getHeight() * 0.5;
+	boundingBoxTop.x = getTransform()->position.x - boundingBoxTop.w * 0.5;
+	boundingBoxTop.y = getTransform()->position.y - boundingBoxTop.h;
+	if (showHitbox)
+	Util::DrawRect(glm::vec2(boundingBoxTop.x, boundingBoxTop.y), boundingBoxTop.w, boundingBoxTop.h);
+}
+
+void Player::updateBoundingBoxBottom()
+{
+	boundingBoxBottom.w = getWidth() + 20;
+	boundingBoxBottom.h = getHeight() * 0.5;
+	boundingBoxBottom.x = getTransform()->position.x - boundingBoxTop.w - 10;
+	boundingBoxBottom.y = getTransform()->position.y;
+	if (showHitbox)
+	Util::DrawRect(glm::vec2(boundingBoxBottom.x, boundingBoxBottom.y), boundingBoxBottom.w, boundingBoxBottom.h);
+}
+
+bool Player::getShowHitbox()
+{
+	return showHitbox;
+}
+
+void Player::setShowHitbox(bool box)
+{
+	showHitbox = box;
 }
 
 bool Player::isColliding(GameObject* pOther) {

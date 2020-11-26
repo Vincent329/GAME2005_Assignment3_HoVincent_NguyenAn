@@ -24,6 +24,8 @@ public:
 	void setWallCoefficient(float _wall);
 	CollisionShape getCollisionType();
 	void setCollisionType(CollisionShape shape);
+	bool getShowHitbox();
+	void setShowHitbox(bool box);
 
 	CollisionShape collisionType;
 
@@ -37,6 +39,7 @@ private:
 	float initialVelocityX;
 	float initialVelocityY;
 	float wallCoefficient;
+	bool showHitbox;
 };
 
 

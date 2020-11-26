@@ -10,6 +10,7 @@
 #include <GLM/gtx/norm.hpp>
 #include "SoundManager.h"
 #include "MousePlayer.h"
+#include "SDL.h"
 #include "Target.h"
 
 class CollisionManager
@@ -29,9 +30,9 @@ public:
 	static bool circleAABBCheck(GameObject* object1, GameObject* object2);
 
 	// Custom collision code
-	static bool collisionCheck(GameObject* object1, GameObject* object2); // structures
 
 	static bool pointRectCheck(glm::vec2 point, glm::vec2 rect_start, float rect_width, float rect_height);
+	static bool collisionCheck(glm::vec2 point, SDL_Rect box);
 
 private:
 	CollisionManager();

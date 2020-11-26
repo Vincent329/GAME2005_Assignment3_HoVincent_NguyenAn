@@ -542,9 +542,15 @@ bool CollisionManager::circleAABBCheck(GameObject* object1, GameObject* object2)
 }
 
 
-bool CollisionManager::collisionCheck(GameObject* object1, GameObject* object2)
+bool CollisionManager::collisionCheck(glm::vec2 point, SDL_Rect box)
 {
-	return 0;
+	const float topLeftX = box.x + box.w * .5;
+	const float topLeftY = box.y + box.h * .5;
+	if (pointRectCheck(point, glm::vec2(topLeftX, topLeftY), box.w, box.h))
+	{
+		return true;
+	} 
+	return false;
 }
 
 bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rect_start, const float rect_width, const float rect_height)
@@ -559,6 +565,8 @@ bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rec
 		point.y > topLeftY &&
 		point.y < topLeftY + height)
 	{
+		//SoundManager::Instance().playSound("yay", 0);
+
 		return true;
 	}
 	return false;

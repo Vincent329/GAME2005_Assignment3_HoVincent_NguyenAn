@@ -15,6 +15,7 @@ Target::Target()
 	m_reset();
 	mass = 2.5f;
 	wallCoefficient = 0.9f;
+	showHitbox = false;
 	setCollisionType(CIRCLE);
 	getRigidBody()->isColliding = false;
 	setType(TARGET);
@@ -33,10 +34,15 @@ void Target::draw()
 	if (collisionType == CIRCLE)
 	{
 		TextureManager::Instance()->draw("circle", x, y, 0, 255, true);
+		if (showHitbox)
+		Util::DrawCircle(getTransform()->position, std::max(getWidth() * 0.5f, getHeight() * 0.5f));
+
 	}
 	else if (collisionType == RECTANGLE)
 	{
 		TextureManager::Instance()->draw("square", x, y, 0, 255, true);
+		if (showHitbox)
+		Util::DrawRect(getTransform()->position - glm::vec2(getWidth() * 0.5, getHeight() * .5f), getWidth(), getHeight());
 
 	}
 }
@@ -102,6 +108,16 @@ void Target::setCollisionType(CollisionShape shape)
 		setWidth(size.x);
 		setHeight(size.y);
 	}
+}
+
+bool Target::getShowHitbox()
+{
+	return showHitbox;
+}
+
+void Target::setShowHitbox(bool box)
+{
+	showHitbox = box;
 }
 
 void Target::m_move()

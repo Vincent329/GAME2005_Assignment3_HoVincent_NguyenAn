@@ -21,7 +21,6 @@ void MousePlayScene::draw()
 {
 	// draw the background
 	TextureManager::Instance()->draw("background", 400.0f, 300.0f, 0, 255, true, SDL_FLIP_NONE);
-
 	if (EventManager::Instance().isIMGUIActive())
 	{
 		GUI_Function();
@@ -36,12 +35,7 @@ void MousePlayScene::draw()
 	}
 
 	drawDisplayList();
-	if (m_pBall->getCollisionType() == CIRCLE)
-		Util::DrawCircle(m_pBall->getTransform()->position, std::max(m_pBall->getWidth() * 0.5f, m_pBall->getHeight() * 0.5f));
-	else if (m_pBall->getCollisionType() == RECTANGLE)
-		Util::DrawRect(m_pBall->getTransform()->position - glm::vec2(m_pBall->getWidth() * 0.5, m_pBall->getHeight() * .5f), m_pBall->getWidth(), m_pBall->getHeight());
-
-	Util::DrawRect(m_pMousePlayer->getTransform()->position - glm::vec2(m_pMousePlayer->getWidth()*0.5, m_pMousePlayer->getHeight() *.5f), m_pMousePlayer->getWidth(), m_pMousePlayer->getHeight());
+	
 	
 	m_playerMass->setText("Player Mass: " + std::to_string(m_pMousePlayer->getMass()));
 	m_ballMass->setText("Ball Mass: " + std::to_string(m_pBall->getMass()));
@@ -162,7 +156,7 @@ void MousePlayScene::start()
 	TextureManager::Instance()->load("../Assets/textures/background.jpg", "background");
 
 	// Load a sound
-	SoundManager::Instance().load("../Assets/audio/yay.ogg", "yay", SOUND_SFX);
+	SoundManager::Instance().load("../Assets/audio/hitsound.ogg", "yay", SOUND_SFX);
 	
 	const SDL_Color white = { 1,1,1,1 };
 	const SDL_Color blue = { 0, 0, 255, 255 };
@@ -180,6 +174,7 @@ void MousePlayScene::start()
 
 	// Instantiate the target
 	m_pBall = new Target();
+	m_pBall->getTransform()->position = glm::vec2(300.0f, 300.0f);
 	addChild(m_pBall);
 
 	m_playerFacingRight = true;
@@ -226,7 +221,7 @@ void MousePlayScene::start()
 	addChild(m_pNextButton);
 
 	/* Instructions Label */
-	m_pInstructionsLabel = new Label("Press the backtick (`) character to Pause and Alter Simulation variables", "Consolas");
+	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Pause and Alter Sim", "Consolas");
 	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 500.0f);
 	addChild(m_pInstructionsLabel);
 
@@ -267,7 +262,7 @@ void MousePlayScene::GUI_Function() const
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 
-	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
+	ImGui::Begin("Physics Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 	// Reset Button
 	if (ImGui::Button("Reset"))
@@ -295,6 +290,18 @@ void MousePlayScene::GUI_Function() const
 		m_pMousePlayer->flipPaddle();
 	}
 
+	if (ImGui::Button("Toggle Player Hitbox")) {
+		if (m_pMousePlayer->getShowHitbox() == false)
+			m_pMousePlayer->setShowHitbox(true);
+		else
+			m_pMousePlayer->setShowHitbox(false);
+	}
+	if (ImGui::Button("Toggle Ball Hitbox")) {
+		if (m_pBall->getShowHitbox() == false)
+			m_pBall->setShowHitbox(true);
+		else
+			m_pBall->setShowHitbox(false);
+	}
 	// --------------------Parameter changes-------------------------
 	static float m_massPlayer = 5.0f;
 	static float m_massBall = 2.5f;

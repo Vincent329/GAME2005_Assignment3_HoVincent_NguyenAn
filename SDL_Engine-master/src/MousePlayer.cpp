@@ -9,10 +9,9 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 		"../Assets/sprites/atlas.png",
 		"spritesheet");
 
-	TextureManager::Instance()->load("../Assets/textures/paddle.png", "paddle");
-
 	setSpriteSheet(TextureManager::Instance()->getSpriteSheet("spritesheet"));
-	
+
+	TextureManager::Instance()->load("../Assets/textures/paddle.png", "paddle");
 	auto size = TextureManager::Instance()->getTextureSize("paddle");
 	// set frame width
 	setWidth(size.x);
@@ -35,6 +34,7 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	// pixels per meter factor
 	m_PPM = 2.0f;
 	isPlaying = true;
+	showHitbox = false;
 
 	lastUpdateTime = SDL_GetTicks();
 	initialPosition = getTransform()->position;
@@ -53,6 +53,10 @@ void MousePlayer::draw()
 	const auto y = getTransform()->position.y;
 
 	TextureManager::Instance()->draw("paddle", x, y, flipAngle, 255, true);
+	if (showHitbox)
+	{
+		Util::DrawRect(getTransform()->position - glm::vec2(getWidth() * 0.5, getHeight() * .5f), getWidth(), getHeight());
+	}
 	// draw the Player according to animation state
 	/*switch (m_currentAnimationState)
 	{
@@ -207,6 +211,16 @@ void MousePlayer::flipPaddle()
 		// set frame height
 		setHeight(size.x);
 	}
+}
+
+bool MousePlayer::getShowHitbox()
+{
+	return showHitbox;
+}
+
+void MousePlayer::setShowHitbox(bool box)
+{
+	showHitbox = box;
 }
 
 bool MousePlayer::isColliding(GameObject * pOther) {

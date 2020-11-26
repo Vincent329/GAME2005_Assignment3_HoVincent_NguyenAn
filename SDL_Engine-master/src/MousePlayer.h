@@ -41,6 +41,8 @@ public:
 	float getInitialVelocityY();
 	void setInitialVelocityY(float _ivelocityY);
 	void flipPaddle();
+	bool getShowHitbox();
+	void setShowHitbox(bool box);
 
 	bool isColliding(GameObject*);
 	float getDistance(GameObject*);
@@ -64,6 +66,7 @@ private:
 	// asset properties
 	bool isFlipped;
 	float flipAngle;
+	bool showHitbox;
 
 	//Physics properties
 	float m_PPM;
