@@ -22,6 +22,9 @@ public:
 private:
 	Label* m_label{};
 
+	Label* m_Scene1;
+	Label* m_Scene2;
+
 	Button* m_pRestartButton;
 	Button* m_pRestartMouseButton;
 };

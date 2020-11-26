@@ -49,9 +49,18 @@ void EndScene::handleEvents()
 void EndScene::start()
 {
 	const SDL_Color blue = { 0, 0, 255, 255 };
+	const SDL_Color black = { 0, 0, 0 , 255 };
+
 	m_label = new Label("END SCENE", "Dock51", 80, blue, glm::vec2(400.0f, 40.0f));
 	m_label->setParent(this);
 	addChild(m_label);
+	m_Scene1 = new Label("Click here for Scene 1", "Consolas", 15, black, glm::vec2(200.0f, 350.0f));
+	m_Scene1->setParent(this);
+	addChild(m_Scene1);
+
+	m_Scene2 = new Label("Click here for Scene 2", "Consolas", 15, black, glm::vec2(600.0f, 350.0f));
+	m_Scene2->setParent(this);
+	addChild(m_Scene2);
 
 	// Restart Button
 	m_pRestartButton = new Button("../Assets/textures/restartButton.png", "restartButton", RESTART_BUTTON);
