@@ -30,6 +30,7 @@ public:
 	void setPPM(float _PPM);
 	bool getIsPlaying();
 	void setIsPlaying(bool _play);
+	// bool isPlaying;
 	//// physics calculations
 	//float subtractMomentum(float mass, float velocity);
 	//float calculateVelocity(float mass, float momentumm);
@@ -42,10 +43,6 @@ private:
 
 	// Mouse Coordinates
 	int xMouse, yMouse;
-	
-	// PPM Scale
-	float m_PPM;
-	bool isPlaying;
 
 	// Player Items
 	Plane* m_pPlaneSprite;
@@ -66,6 +63,14 @@ private:
 	Button* m_pBackButton;
 	Button* m_pNextButton;
 	Label* m_pInstructionsLabel;
+
+	Label* m_playerMass;
+	Label* m_ballMass;
+	Label* m_playerVelocity;
+	Label* m_ballVelocity;
+	Label* m_coefficient;
+	Label* m_PixelsPerMeter;
+	
 };
 
 #endif  /* defined (__MOUSE_PLAY_SCENE__) */

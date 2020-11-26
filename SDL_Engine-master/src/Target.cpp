@@ -72,6 +72,11 @@ float Target::getInitialVelocityY()
 	return initialVelocityY;
 }
 
+float Target::getWallCoefficient()
+{
+	return wallCoefficient;
+}
+
 void Target::setWallCoefficient(float _wall)
 {
 	wallCoefficient = _wall;

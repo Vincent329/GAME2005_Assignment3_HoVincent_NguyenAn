@@ -15,6 +15,8 @@ MousePlayScene::MousePlayScene()
 MousePlayScene::~MousePlayScene()
 = default;
 
+static bool isPlaying = true;
+
 void MousePlayScene::draw()
 {
 	// draw the background
@@ -23,6 +25,14 @@ void MousePlayScene::draw()
 	if (EventManager::Instance().isIMGUIActive())
 	{
 		GUI_Function();
+		if (isPlaying)
+		{
+			isPlaying = !isPlaying;
+			m_pBall->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
+		}
+	}
+	else {
+		isPlaying = true;
 	}
 
 	drawDisplayList();
@@ -32,6 +42,13 @@ void MousePlayScene::draw()
 		Util::DrawRect(m_pBall->getTransform()->position - glm::vec2(m_pBall->getWidth() * 0.5, m_pBall->getHeight() * .5f), m_pBall->getWidth(), m_pBall->getHeight());
 
 	Util::DrawRect(m_pMousePlayer->getTransform()->position - glm::vec2(m_pMousePlayer->getWidth()*0.5, m_pMousePlayer->getHeight() *.5f), m_pMousePlayer->getWidth(), m_pMousePlayer->getHeight());
+	
+	m_playerMass->setText("Player Mass: " + std::to_string(m_pMousePlayer->getMass()));
+	m_ballMass->setText("Ball Mass: " + std::to_string(m_pBall->getMass()));
+	m_playerVelocity->setText("Player Velocity X:" + std::to_string(m_pMousePlayer->getVelocityX() * m_pMousePlayer->getPPM()) + " Y: " + std::to_string(m_pMousePlayer->getVelocityY() * m_pMousePlayer->getPPM()));
+	m_ballVelocity->setText("Ball Velocity X:" + std::to_string(m_pBall->getInitialVelocityX() * m_pMousePlayer->getPPM()) + " Y: " + std::to_string(m_pBall->getInitialVelocityX() * m_pMousePlayer->getPPM()));
+	m_coefficient->setText("Wall Friction Coefficient: " + std::to_string(m_pBall->getWallCoefficient()));
+	m_PixelsPerMeter->setText("Pixels/Meter: " + std::to_string(m_pMousePlayer->getPPM()));
 
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
 }
@@ -41,23 +58,20 @@ static float normalX = 0.0f, normalY = 0.0f;
 void MousePlayScene::update()
 {
 	updateDisplayList();
-	SDL_GetMouseState(&xMouse, &yMouse);
-	//m_pMousePlayer->mouseMovement(xMouse, yMouse);
-	glm::vec2 direction = glm::vec2(xMouse - m_pMousePlayer->getTransform()->position.x, yMouse - m_pMousePlayer->getTransform()->position.y);
-	m_pMousePlayer->getTransform()->position += direction;
-	m_pMousePlayer->setVelocityX(direction.x/4);
-	m_pMousePlayer->setVelocityY(direction.y/4);
-
-
-	if (m_pBall->getCollisionType() == CIRCLE)
+	if (isPlaying)
 	{
-		CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer);
-	}
-	else if (m_pBall->getCollisionType() == RECTANGLE)
-	{
-		CollisionManager::AABBCheck(m_pBall, m_pMousePlayer);
-	}
+		SDL_GetMouseState(&xMouse, &yMouse);
+		m_pMousePlayer->mouseMovement(xMouse, yMouse);
 
+		if (m_pBall->getCollisionType() == CIRCLE)
+		{
+			CollisionManager::circleAABBCheck(m_pBall, m_pMousePlayer);
+		}
+		else if (m_pBall->getCollisionType() == RECTANGLE)
+		{
+			CollisionManager::AABBCheck(m_pBall, m_pMousePlayer);
+		}
+	}
 	SDL_ShowCursor(1);
 	// figure out velocity response
 }
@@ -150,6 +164,9 @@ void MousePlayScene::start()
 	// Load a sound
 	SoundManager::Instance().load("../Assets/audio/yay.ogg", "yay", SOUND_SFX);
 	
+	const SDL_Color white = { 1,1,1,1 };
+	const SDL_Color blue = { 0, 0, 255, 255 };
+	const SDL_Color black = { 0, 0, 0 , 255 };
 	// Set GUI Title
 		m_guiTitle = "Play Scene";
 
@@ -166,7 +183,6 @@ void MousePlayScene::start()
 	addChild(m_pBall);
 
 	m_playerFacingRight = true;
-	setPPM(5.0f);
 
 	// Back Button
 	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
@@ -210,20 +226,27 @@ void MousePlayScene::start()
 	addChild(m_pNextButton);
 
 	/* Instructions Label */
-	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Debug View", "Consolas");
+	m_pInstructionsLabel = new Label("Press the backtick (`) character to Pause and Alter Simulation variables", "Consolas");
 	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 500.0f);
-
 	addChild(m_pInstructionsLabel);
-}
 
-float MousePlayScene::getPPM()
-{
-	return m_PPM;
-}
+	m_playerMass = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 10.0f));
+	addChild(m_playerMass);
 
-void MousePlayScene::setPPM(float _PPM)
-{
-	m_PPM = _PPM;
+	m_ballMass = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 30.0f));
+	addChild(m_ballMass);
+
+	m_playerVelocity = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 50.0f));
+	addChild(m_playerVelocity);
+
+	m_ballVelocity = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 70.0f));
+	addChild(m_ballVelocity);
+
+	m_coefficient = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 90.0f));
+	addChild(m_coefficient);
+
+	m_PixelsPerMeter = new Label(" ", "Consolas", 15, black, glm::vec2(650.0f, 110.0f));
+	addChild(m_PixelsPerMeter);
 }
 
 bool MousePlayScene::getIsPlaying()
@@ -245,17 +268,6 @@ void MousePlayScene::GUI_Function() const
 	//ImGui::ShowDemoWindow();
 
 	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
-
-	if (ImGui::Button("My Button"))
-	{
-		std::cout << "My Button Pressed" << std::endl;
-	}
-
-	// Play Button
-	if (ImGui::Button("Play"))
-	{
-		
-	}
 
 	// Reset Button
 	if (ImGui::Button("Reset"))
@@ -287,7 +299,7 @@ void MousePlayScene::GUI_Function() const
 	static float m_massPlayer = 5.0f;
 	static float m_massBall = 2.5f;
 	static float m_wallCoefficient = 0.9;
-	static float m_pixels = 5.0f;
+	static float m_pixels = 2.0f;
 
 	if (ImGui::SliderFloat("Pixels Per Meter", &m_pixels, 1.0f, 10.0f, "%.1f"))	{	
 		m_pMousePlayer->setPPM(m_pixels);

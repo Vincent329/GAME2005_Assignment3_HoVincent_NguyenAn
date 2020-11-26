@@ -32,6 +32,7 @@ MousePlayer::MousePlayer() : m_currentAnimationState(PLAYER_IDLE_RIGHT)
 	isFlipped = false;
 	flipAngle = 0.0f; 
 
+	// pixels per meter factor
 	m_PPM = 2.0f;
 	isPlaying = true;
 
@@ -128,8 +129,10 @@ void MousePlayer::stopMovingY() {
 
 void MousePlayer::mouseMovement(int x, int y)
 {
-	getTransform()->position.x = x;
-	getTransform()->position.y = y;
+	glm::vec2 direction = glm::vec2(x - getTransform()->position.x, y - getTransform()->position.y);
+	getTransform()->position += direction;
+	setVelocityX(direction.x / 4);
+	setVelocityY(direction.y / 4);
 }
 
 float MousePlayer::getMass()

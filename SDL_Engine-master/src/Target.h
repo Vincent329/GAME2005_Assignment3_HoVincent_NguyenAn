@@ -20,6 +20,7 @@ public:
 	void setMass(float _nass);
 	float getInitialVelocityX();
 	float getInitialVelocityY();
+	float getWallCoefficient();
 	void setWallCoefficient(float _wall);
 	CollisionShape getCollisionType();
 	void setCollisionType(CollisionShape shape);
