@@ -22,7 +22,7 @@ Enemy* BulletPool::spawn() {
 
 	Enemy* bullet = NULL;
 
-	if (inactive.size() > 0) {
+	if (inactive.size() > 0) { 
 		bullet = inactive.back();
 		bullet->Reset();
 		bullet->active = true;

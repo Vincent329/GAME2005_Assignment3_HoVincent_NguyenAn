@@ -548,6 +548,8 @@ bool CollisionManager::collisionCheck(glm::vec2 point, SDL_Rect box)
 	const float topLeftY = box.y + box.h * .5;
 	if (pointRectCheck(point, glm::vec2(topLeftX, topLeftY), box.w, box.h))
 	{
+		SoundManager::Instance().playSound("yay", 0);
+
 		return true;
 	} 
 	return false;
@@ -565,7 +567,6 @@ bool CollisionManager::pointRectCheck(const glm::vec2 point, const glm::vec2 rec
 		point.y > topLeftY &&
 		point.y < topLeftY + height)
 	{
-		//SoundManager::Instance().playSound("yay", 0);
 
 		return true;
 	}
